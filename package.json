@@ -1,0 +1,27 @@
+{
+  "name": "rc-4000",
+  "version": "1.0.0",
+  "description": "Sekio RC-4000 Manager",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/z88kat/rc-4000.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/z88kat/rc-4000/issues"
+  },
+  "homepage": "https://github.com/z88kat/rc-4000#readme",
+  "dependencies": {
+    "chalk": "^5.2.0",
+    "command-line-args": "^5.2.1",
+    "command-line-usage": "^6.1.3",
+    "dotenv": "^16.0.3",
+    "fs-extra": "^11.1.0"
+  }
+}
