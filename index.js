@@ -21,11 +21,16 @@ import {
     systemMenu
 } from "./menus/system.js";
 import {
+    communicationsMenu
+} from "./menus/communication.js";
+import {
     watch
 } from "./lib/watch.js";
 import {
     sendData
 } from "./lib/serial.js";
+import Label from "./lib/label.js";
+import Memo from "./lib/memo.js";
 
 
 const optionDefinitions = [{
@@ -52,6 +57,11 @@ const sections = [{
         optionList: [{
                 name: 'load',
                 description: 'Load a previous saved configuration file for your watch.',
+                type: String
+            },
+            {
+                name: 'port',
+                description: 'The serial port to use to communicate with the watch. Default is /dev/ttyUSB0',
                 type: String
             },
             {
@@ -85,7 +95,7 @@ const start = async function () {
             //console.log(file);
             parse(file);
         } else {
-            console.log(chalk.red('File does not exist'));
+            console.log(chalk.redBright('File does not exist'));
         }
 
     }
@@ -154,39 +164,10 @@ const readConsole = async function () {
                 console.log(chalk.green('Quitting'));
                 break;
             default:
+                response.menu = '5';
                 console.log(chalk.green('Quitting'));
                 break;
         }
-    }
-};
-
-const communicationsMenu = async function () {
-
-    let response = await prompts({
-        type: 'select',
-        name: 'menu',
-        message: 'Communication Menu',
-        choices: [{
-                title: 'Send Data to Watch',
-                value: '1'
-            },
-            {
-                title: 'Quit',
-                value: '5'
-            }
-        ],
-    });
-
-    switch (response.menu) {
-        case '1':
-            await sendData();
-            break;
-        case '5':
-            //            console.log(chalk.green('Quitting'));
-            break;
-        default:
-            //          console.log(chalk.green('Quitting'));
-            break;
     }
 };
 
@@ -234,7 +215,7 @@ const editCreateWatchData = async function () {
     // based upon the response grab the label and edit it
     if (response.menu == '90') {
         // new label
-        await newLabel();
+        await addLabel();
     }
     if (response.menu == '99') {
         // back to main menu
@@ -244,6 +225,12 @@ const editCreateWatchData = async function () {
     // edit the label
     await editLabel(response.menu);
 
+};
+
+const addLabel = async function () {
+
+    let label = new Memo('New Label');
+    watch.addLabel(label);
 };
 
 
