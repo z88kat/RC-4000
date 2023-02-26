@@ -7,6 +7,9 @@ import chalk from "chalk";
 import {
     watch
 } from "../lib/watch.js";
+import {
+    EmptyData
+} from "../lib/constants.js";
 
 
 let filename;
@@ -87,6 +90,18 @@ const saveFile = async function () {
         return false;
     }
 
+    let filedata = buildRCData();
+
+    // finally we are done
+    fs.writeFileSync(response.filename, filedata, 'utf8');
+    console.log(chalk.greenBright('File saved'));
+
+};
+
+//
+// Build the RC data string to be send to the watch, save it to a file
+//
+const buildRCData = function (data) {
     // Write out the labels, data and any padding to fill the file to 2000 bytes of data
     // This data file is sent to the watch
 
@@ -110,14 +125,27 @@ const saveFile = async function () {
         filedata += label.getDataForSave();
     }
 
-    // finally we are done
-    fs.writeFileSync(response.filename, filedata, 'utf8');
-    console.log(chalk.greenBright('File saved'));
+    // We need to pad to a maximum of 2000 bytes (81 lines)
+    // We have already written x lines based on the number of labels + 1 for the number of lines
+    // So we need to write 81 - x lines
+    let linesToWrite = 81 - (numberOfLines + 1);
+    for (let i = 0; i < linesToWrite; i++) {
+        filedata += 'd ' + EmptyData + ' 0\r\n';
+    }
+    // Write the finale line, i have no idea what this is
+    // The number should be something i guess...
+    filedata += ' 0\r\n';
 
+    // We need to append the hex code 1A to the end of the file
+    // I believe this is the end of file marker
+    filedata += '\x1A';
+
+    return filedata;
 };
 
 
 
 export {
-    systemMenu
+    systemMenu,
+    buildRCData
 }

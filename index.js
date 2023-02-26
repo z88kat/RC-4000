@@ -23,6 +23,9 @@ import {
 import {
     watch
 } from "./lib/watch.js";
+import {
+    sendData
+} from "./lib/serial.js";
 
 
 const optionDefinitions = [{
@@ -30,6 +33,10 @@ const optionDefinitions = [{
         type: String
     },
     {
+        name: 'port',
+        type: String,
+        default: '/dev/ttyUSB0'
+    }, {
         name: 'help',
         type: Boolean,
         default: false
@@ -150,6 +157,36 @@ const readConsole = async function () {
                 console.log(chalk.green('Quitting'));
                 break;
         }
+    }
+};
+
+const communicationsMenu = async function () {
+
+    let response = await prompts({
+        type: 'select',
+        name: 'menu',
+        message: 'Communication Menu',
+        choices: [{
+                title: 'Send Data to Watch',
+                value: '1'
+            },
+            {
+                title: 'Quit',
+                value: '5'
+            }
+        ],
+    });
+
+    switch (response.menu) {
+        case '1':
+            await sendData();
+            break;
+        case '5':
+            //            console.log(chalk.green('Quitting'));
+            break;
+        default:
+            //          console.log(chalk.green('Quitting'));
+            break;
     }
 };
 
