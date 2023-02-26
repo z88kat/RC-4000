@@ -3,6 +3,9 @@
  */
 
 import prompts from "prompts";
+import {
+    sendData
+} from "../lib/serial.js";
 
 const communicationsMenu = async function () {
 

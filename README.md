@@ -40,3 +40,16 @@ You can also specify the file to load with the `--load` option:
 ```
 npm start --load /path/to/file
 ```
+
+
+## Troubleshooting
+
+If you get the error `Error: Permission denied, cannot open /dev/ttyUSB0`.
+
+Try the following command:
+
+```
+sudo chmod 666 /dev/ttyUSB0
+```
+
+This will be reset once you disconnect the device. So you need to run this command each time you connect the device.
