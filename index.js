@@ -1,12 +1,9 @@
 /**
+ * Seiko RC-1000/4000 Watch Manager
  *
- *
- *
+ * https://symbl.cc/en/search/?q=block
  */
-// .env needs to exist with the environment variables
-import "dotenv/config.js";
 import chalk from 'chalk';
-// Need to specify target prod otherwise it does not run
 import commandLineArgs from 'command-line-args';
 import commandLineUsage from 'command-line-usage';
 import fs from 'fs-extra';
@@ -14,9 +11,6 @@ import {
     parse
 } from "./lib/parser.js";
 import prompts from "prompts";
-// Terminal kit is used for the terminal, did not have the time to use this right now
-//import terminal from 'terminal-kit';
-//const term = terminal.terminal;
 import {
     systemMenu
 } from "./menus/system.js";
@@ -24,13 +18,15 @@ import {
     communicationsMenu
 } from "./menus/communication.js";
 import {
+    editCreateWatchData
+} from "./menus/create.js";
+import {
     watch
 } from "./lib/watch.js";
-import {
-    sendData
-} from "./lib/serial.js";
-import Label from "./lib/label.js";
-import Memo from "./lib/memo.js";
+
+import moment from 'moment';
+
+const VERSION = '1.0';
 
 
 const optionDefinitions = [{
@@ -94,6 +90,8 @@ const start = async function () {
             const file = await fs.readFile(options.load, 'utf8');
             //console.log(file);
             parse(file);
+            // Set the filename
+            watch.setFilename(options.load);
         } else {
             console.log(chalk.redBright('File does not exist'));
         }
@@ -140,7 +138,7 @@ const readConsole = async function () {
                     value: '4'
                 },
                 {
-                    title: 'Quit',
+                    title: 'Quit Program',
                     value: '5'
                 }
             ],
@@ -172,167 +170,32 @@ const readConsole = async function () {
 };
 
 
-//
-//
-//
-const editCreateWatchData = async function () {
 
 
-    // display the labels we are going to edit
-    let labels = watch.getLabels();
-    console.log(chalk.green('Edit/Create Watch Data'));
-    console.log(chalk.green(`${labels.length} / 11 labels`));
+// Set the current date time and update once per second
+/*setInterval(() => {
 
-    // Build the choices
-    let choices = [];
-    for (let i = 0; i < labels.length; i++) {
-        choices.push({
-            title: '> ' + labels[i].label,
-            value: i
-        });
-    }
+    // Get the current date in the format DD-MM DAY
+    let date = moment().format('DD-MM ddd') + ' ' + moment().format('HH:mm:ss');
+    process.stdout.clearLine();
+    process.stdout.cursorTo(process.stdout.columns - (date.length + 15));
+    process.stdout.write(date + ' ' + moment().format('HH:mm:ss'));
 
-    // add the new label option
-    choices.push({
-        title: '+ New Label',
-        value: '90'
-    });
-
-    // finally add the back option
-    choices.push({
-        title: '< Back to Main Menu',
-        value: '99'
-    });
+}, 1000);*/
 
 
-    let response = await prompts({
-        type: 'select',
-        name: 'menu',
-        message: 'Select Label to Edit',
-        choices: choices
-    });
-
-    // based upon the response grab the label and edit it
-    if (response.menu == '90') {
-        // new label
-        await addLabel();
-    }
-    if (response.menu == '99') {
-        // back to main menu
-        return;
-    }
-
-    // edit the label
-    await editLabel(response.menu);
-
-};
-
-const addLabel = async function () {
-
-    let label = new Memo('New Label');
-    watch.addLabel(label);
-};
-
-
-//
-//
-//
-const editLabel = async function (index) {
-
-    let labels = watch.getLabels();
-    let label = labels[index];
-    let data = label.getData();
-
-    // display the data
-    console.log(chalk.green('Edit/Create Watch Data'));
-
-
-    // Build the choices, based upon the data
-    let choices = [];
-    for (let i = 0; i < data.length; i++) {
-        choices.push({
-            title: '> ' + data[i],
-            value: i
-        });
-    }
-
-    // Add the back to menu option
-    choices.push({
-        title: '< Back to Label Menu',
-        value: '99'
-    });
-
-    let response = await prompts({
-        type: 'select',
-        name: 'menu',
-        message: 'Select Data to Edit',
-        choices: choices
-    });
-
-
-    // based upon the response grab the label and edit it
-    if (response.menu == '99') {
-        // back to main menu
-        return;
-    }
-
-    // edit the label
-    let value = await editData(data[response.menu]);
-    // If the value is empty then delete the data
-    if (value == '') {
-        data.splice(response.menu, 1);
-    } else {
-        data[response.menu] = value;
-    }
-    // redraw the screen
-    await editLabel(index);
-};
-
-//
-//
-//
-const editData = async function (data) {
-
-    let isLoaded = false;
-
-    // Edit the data on the command line
-    let response = await prompts({
-        type: 'text',
-        name: 'value',
-        message: 'data:',
-        initial: data,
-        validate: value => value.length < 25 ? true : 'Too long',
-        onRender(kleur) {
-            // Set the initial value and cursor position
-            if (!isLoaded) {
-                this._value = data;
-                this.cursor = data.length;
-                isLoaded = true;
-            }
-            // Print the length of the value and prevent the user from typing more than 24 characters
-            this.msg = kleur.yellow(this.value.length);
-            if (this.value.length > 24) {
-                this.msg = kleur.red(this.value.length - 1);
-                this.value = this.value.substring(0, 24);
-            }
-        },
-        onState(state) {
-            //console.log(state);
-        }
-    });
-
-    // Get and return the value
-    return response.value;
-
-};
-
+// Get the current date in the format DD-MM DAY
+let date = moment().format('DD-MM ddd') + ' ' + moment().format('HH:mm:ss');
 
 // Let us start
+
+// Clear the console
+process.stdout.write("\u001b[2J\u001b[0;0H");
+
 console.log(chalk.blue('SEIKO'));
 console.log(chalk.blue('Wrist Terminal RC-4000'));
 console.log(chalk.blue('Data Manager Program'));
-console.log('');
-console.log(chalk.magenta('Version 1.0'));
+console.log(chalk.magenta(String.fromCharCode(9608) + ' Version ' + VERSION) + ' ' + String.fromCharCode(183) + ' ' + chalk.magenta(date));
 console.log(chalk.magenta(''));
 start().catch(err => {
     console.error('Error:');

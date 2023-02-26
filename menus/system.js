@@ -11,18 +11,21 @@ import {
     EmptyData
 } from "../lib/constants.js";
 
-
-let filename;
-
 //
 // Save/Load Watch Data
 //
 const systemMenu = async function () {
 
+    // Display the current filename if there is one
+    let filename = watch.getFilename();
+    if (filename != '') {
+        console.log(chalk.green(`Name File: ${filename}`));
+    }
+
     let response = await prompts({
         type: 'select',
         name: 'menu',
-        message: 'Main Menu',
+        message: 'System Menu',
         choices: [{
                 title: 'Load Data',
                 value: '1'
@@ -38,7 +41,11 @@ const systemMenu = async function () {
         ],
     });
     if (response.menu == '1') {
-        await loadFile();
+        let success = await loadFile();
+        if (!success) {
+            await systemMenu();
+        }
+
     } else if (response.menu == '2') {
         let success = await saveFile();
         if (!success) {
@@ -66,16 +73,21 @@ const loadFile = async function () {
         parse(file);
 
         // store the filename for when we save
-        filename = response.filename;
+        let filename = watch.setFilename(response.filename);
     } else {
         console.log(chalk.redBright('File does not exist'));
+        return false;
     }
+
+    return true;
 };
 
 //
 // Save the watch data to a file
 //
 const saveFile = async function () {
+
+    let filename = watch.getFilename();
 
     let response = await prompts({
         type: 'text',
@@ -85,7 +97,8 @@ const saveFile = async function () {
     });
 
     // if the filename is blank, just return and do nothing
-    if (response.filename == '') {
+    // also must be of type string
+    if (response.filename == '' || typeof response.filename != 'string') {
         console.log(chalk.redBright('No filename entered. No file saved'));
         return false;
     }
