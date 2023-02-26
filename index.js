@@ -14,6 +14,16 @@ import {
     parse
 } from "./lib/parser.js";
 import prompts from "prompts";
+// Terminal kit is used for the terminal, did not have the time to use this right now
+//import terminal from 'terminal-kit';
+//const term = terminal.terminal;
+import {
+    systemMenu
+} from "./menus/system.js";
+import {
+    watch
+} from "./lib/watch.js";
+
 
 const optionDefinitions = [{
         name: 'load',
@@ -76,7 +86,8 @@ const start = async function () {
     // Now read console input
     await readConsole();
 
-
+    //term.moveTo(1, 1, 'Hello, world!')
+    //term.red('Helloer, world!')
 
 };
 
@@ -136,58 +147,161 @@ const readConsole = async function () {
                 console.log(chalk.green('Quitting'));
                 break;
             default:
-                console.log(chalk.red('Unknown menu option'));
-
+                console.log(chalk.green('Quitting'));
+                break;
         }
     }
 };
 
+
 //
-// Save/Load Watch Data
 //
-const systemMenu = async function () {
+//
+const editCreateWatchData = async function () {
+
+
+    // display the labels we are going to edit
+    let labels = watch.getLabels();
+    console.log(chalk.green('Edit/Create Watch Data'));
+    console.log(chalk.green(`${labels.length} / 11 labels`));
+
+    // Build the choices
+    let choices = [];
+    for (let i = 0; i < labels.length; i++) {
+        choices.push({
+            title: '> ' + labels[i].label,
+            value: i
+        });
+    }
+
+    // add the new label option
+    choices.push({
+        title: '+ New Label',
+        value: '90'
+    });
+
+    // finally add the back option
+    choices.push({
+        title: '< Back to Main Menu',
+        value: '99'
+    });
+
 
     let response = await prompts({
         type: 'select',
         name: 'menu',
-        message: 'Main Menu',
-        choices: [{
-                title: 'Load Data',
-                value: '1'
-            },
-            {
-                title: 'Save Data',
-                value: '2'
-            },
-            {
-                title: 'Back to Main Menu',
-                value: '5'
-            }
-        ],
+        message: 'Select Label to Edit',
+        choices: choices
     });
-    if (response.menu == '1') {
-        await loadFile();
+
+    // based upon the response grab the label and edit it
+    if (response.menu == '90') {
+        // new label
+        await newLabel();
     }
-    //    console.log(response);
+    if (response.menu == '99') {
+        // back to main menu
+        return;
+    }
+
+    // edit the label
+    await editLabel(response.menu);
+
 };
 
-const loadFile = async function () {
+
+//
+//
+//
+const editLabel = async function (index) {
+
+    let labels = watch.getLabels();
+    let label = labels[index];
+    let data = label.getData();
+
+    // display the data
+    console.log(chalk.green('Edit/Create Watch Data'));
+
+
+    // Build the choices, based upon the data
+    let choices = [];
+    for (let i = 0; i < data.length; i++) {
+        choices.push({
+            title: '> ' + data[i],
+            value: i
+        });
+    }
+
+    // Add the back to menu option
+    choices.push({
+        title: '< Back to Label Menu',
+        value: '99'
+    });
 
     let response = await prompts({
-        type: 'text',
-        name: 'filename',
-        message: 'Enter filename to load',
+        type: 'select',
+        name: 'menu',
+        message: 'Select Data to Edit',
+        choices: choices
     });
 
-    // Test the file exists
-    if (fs.existsSync(response.filename)) {
-        const file = await fs.readFile(response.filename, 'utf8');
-        //console.log(file);
-        parse(file);
-    } else {
-        console.log(chalk.redBright('File does not exist'));
+
+    // based upon the response grab the label and edit it
+    if (response.menu == '99') {
+        // back to main menu
+        return;
     }
+
+    // edit the label
+    let value = await editData(data[response.menu]);
+    // If the value is empty then delete the data
+    if (value == '') {
+        data.splice(response.menu, 1);
+    } else {
+        data[response.menu] = value;
+    }
+    // redraw the screen
+    await editLabel(index);
 };
+
+//
+//
+//
+const editData = async function (data) {
+
+    let isLoaded = false;
+
+    // Edit the data on the command line
+    let response = await prompts({
+        type: 'text',
+        name: 'value',
+        message: 'data:',
+        initial: data,
+        validate: value => value.length < 25 ? true : 'Too long',
+        onRender(kleur) {
+            // Set the initial value and cursor position
+            if (!isLoaded) {
+                this._value = data;
+                this.cursor = data.length;
+                isLoaded = true;
+            }
+            // Print the length of the value and prevent the user from typing more than 24 characters
+            this.msg = kleur.yellow(this.value.length);
+            if (this.value.length > 24) {
+                this.msg = kleur.red(this.value.length - 1);
+                this.value = this.value.substring(0, 24);
+            }
+        },
+        onState(state) {
+            //console.log(state);
+        }
+    });
+
+    // Get and return the value
+    return response.value;
+
+};
+
 
 // Let us start
 console.log(chalk.blue('SEIKO'));
