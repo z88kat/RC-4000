@@ -60,7 +60,7 @@ const editCreateWatchData = async function () {
     // based upon the response grab the label and edit it
     if (response.menu == '90') {
         // new label
-        await addLabel();
+        await addMemoLabel();
     } else if (response.menu == '92') {
         // new label
         await deleteLabel();
@@ -77,10 +77,33 @@ const editCreateWatchData = async function () {
 
 };
 
-const addLabel = async function () {
+//
+// Allow the user to input a new label
+//
+const addMemoLabel = async function () {
 
-    let label = new Memo('New Label');
-    watch.addLabel(label);
+
+    let response = await prompts({
+        type: 'text',
+        name: 'label',
+        message: 'Enter Label Name',
+        validate: value => value.length < 25 ? true : 'Too long',
+        onRender(kleur) {
+            // Print the length of the value and prevent the user from typing more than 24 characters
+            this.msg = kleur.yellow(this.value.length);
+            if (this.value.length > 24) {
+                this.msg = kleur.red(this.value.length - 1);
+                this.value = this.value.substring(0, 24);
+            }
+        },
+    });
+
+    if (response.label.length > 0) {
+        let label = new Memo();
+        label.setLabel(response.label);
+        watch.addLabel(label);
+    }
+
 };
 
 
