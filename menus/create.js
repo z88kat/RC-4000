@@ -109,7 +109,7 @@ const addMemoLabel = async function () {
 
 
 //
-// Edit the watch label data
+// Edit the watch label , display all the data attached to the label
 //
 const editLabel = async function (index) {
 
@@ -129,10 +129,16 @@ const editLabel = async function (index) {
     let choices = [];
     for (let i = 0; i < data.length; i++) {
         choices.push({
-            title: '> ' + data[i],
+            title: String.fromCharCode(9641) + ' ' + data[i],
             value: i
         });
     }
+
+    // Add data entry
+    choices.push({
+        title: '+ Add Data',
+        value: '80'
+    });
 
     // Add editing of the label
     choices.push({
@@ -160,6 +166,8 @@ const editLabel = async function (index) {
         return;
     } else if (response.menu == '90') {
         await editLabelName(label);
+    } else if (response.menu == '80') {
+        await addData(label);
     } else {
 
         // edit the label
@@ -167,7 +175,7 @@ const editLabel = async function (index) {
         // If the value is empty then delete the data
         if (value == '') {
             data.splice(response.menu, 1);
-        } else {
+        } else if (value) {
             data[response.menu] = value;
         }
     }
@@ -251,6 +259,38 @@ const editData = async function (data) {
 
     // Get and return the value
     return response.value;
+
+};
+
+//
+// Add new data to the given label
+//
+const addData = async function (label) {
+
+    let isLoaded = false;
+
+    // Edit the data on the command line
+    let response = await prompts({
+        type: 'text',
+        name: 'value',
+        message: 'data:',
+        validate: value => value.length < 25 ? true : 'Too long',
+        onRender(kleur) {
+            // Print the length of the value and prevent the user from typing more than 24 characters
+            this.msg = kleur.yellow(this.value.length);
+            if (this.value.length > 24) {
+                this.msg = kleur.red(this.value.length - 1);
+                this.value = this.value.substring(0, 24);
+            }
+        },
+        onState(state) {
+            //console.log(state);
+        }
+    });
+
+    if (response.value && response.value.length > 0) {
+        label.addRawData(response.value);
+    }
 
 };
 

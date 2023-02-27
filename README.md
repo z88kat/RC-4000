@@ -53,3 +53,7 @@ sudo chmod 666 /dev/ttyUSB0
 ```
 
 This will be reset once you disconnect the device. So you need to run this command each time you connect the device.
+
+# Data File Format
+
+The data file uses the origial data format from the Sekio RC-4000 MSDOS application.  Thus the files are interchangeable between the two applications.
