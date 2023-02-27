@@ -161,10 +161,6 @@ const readConsole = async function () {
             case '5':
                 console.log(chalk.green('Quitting'));
                 break;
-            default:
-                response.menu = '5';
-                console.log(chalk.green('Quitting'));
-                break;
         }
     }
 };

@@ -33,7 +33,7 @@ const editCreateWatchData = async function () {
 
     // add the new label option
     choices.push({
-        title: '+ New Label',
+        title: '+ New Memo Label',
         value: '90'
     });
 
@@ -50,10 +50,11 @@ const editCreateWatchData = async function () {
     });
 
 
+    // display the menu to make a selection
     let response = await prompts({
         type: 'select',
         name: 'menu',
-        message: 'Select Label to Edit',
+        message: 'Label Menu',
         choices: choices
     });
 
@@ -68,7 +69,7 @@ const editCreateWatchData = async function () {
         // back to main menu
         return;
     } else {
-        // edit the label
+        // edit the label data
         await editLabel(response.menu);
     }
 
@@ -98,7 +99,7 @@ const addMemoLabel = async function () {
         },
     });
 
-    if (response.label.length > 0) {
+    if (response.label && response.label.length > 0) {
         let label = new Memo();
         label.setLabel(response.label);
         watch.addLabel(label);
@@ -108,7 +109,7 @@ const addMemoLabel = async function () {
 
 
 //
-// Edit the watch data
+// Edit the watch label data
 //
 const editLabel = async function (index) {
 
@@ -121,7 +122,7 @@ const editLabel = async function (index) {
     let data = label.getData();
 
     // display the data
-    console.log(chalk.green('Edit/Create Watch Data'));
+    console.log(chalk.green('Edit/Create Watch Data for Label: ' + label.getLabel()));
 
 
     // Build the choices, based upon the data
@@ -132,6 +133,12 @@ const editLabel = async function (index) {
             value: i
         });
     }
+
+    // Add editing of the label
+    choices.push({
+        title: String.fromCharCode(8860) + ' Modify Label Name',
+        value: '90'
+    });
 
     // Add the back to menu option
     choices.push({
@@ -151,18 +158,62 @@ const editLabel = async function (index) {
     if (response.menu == '99') {
         // back to main menu
         return;
-    }
-
-    // edit the label
-    let value = await editData(data[response.menu]);
-    // If the value is empty then delete the data
-    if (value == '') {
-        data.splice(response.menu, 1);
+    } else if (response.menu == '90') {
+        await editLabelName(label);
     } else {
-        data[response.menu] = value;
+
+        // edit the label
+        let value = await editData(data[response.menu]);
+        // If the value is empty then delete the data
+        if (value == '') {
+            data.splice(response.menu, 1);
+        } else {
+            data[response.menu] = value;
+        }
     }
     // redraw the screen
     await editLabel(index);
+};
+
+//
+// Edit an existing label name
+//
+const editLabelName = async function (label) {
+
+    let isLoaded = false;
+    let data = label.getLabel();
+
+    // Edit the data on the command line
+    let response = await prompts({
+        type: 'text',
+        name: 'value',
+        message: 'data:',
+        initial: data,
+        validate: value => value.length < 25 ? true : 'Too long',
+        onRender(kleur) {
+            // Set the initial value and cursor position
+            if (!isLoaded && data) {
+                this._value = data;
+                this.cursor = data.length;
+                isLoaded = true;
+            }
+            // Print the length of the value and prevent the user from typing more than 24 characters
+            this.msg = kleur.yellow(this.value.length);
+            if (this.value.length > 24) {
+                this.msg = kleur.red(this.value.length - 1);
+                this.value = this.value.substring(0, 24);
+            }
+        },
+        onState(state) {
+            //console.log(state);
+        }
+    });
+
+    // update the label
+    if (response.value && response.value.length > 0) {
+        label.setLabel(response.value);
+    }
+
 };
 
 //
