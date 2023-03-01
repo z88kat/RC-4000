@@ -113,7 +113,8 @@ const addMemoLabel = async function () {
 //
 const editLabel = async function (index) {
 
-    if (!index) return;
+
+    if (index === undefined) return;
 
     let labels = watch.getLabels();
     let label = labels[index];
@@ -139,6 +140,16 @@ const editLabel = async function (index) {
         title: '+ Add Data',
         value: '80'
     });
+
+
+    // Delete data entry (only if there is data)
+    if (data.length > 0) {
+        choices.push({
+            title: '- Delete Data',
+            value: '85'
+        });
+    }
+
 
     // Add editing of the label
     choices.push({
@@ -166,6 +177,8 @@ const editLabel = async function (index) {
         return;
     } else if (response.menu == '90') {
         await editLabelName(label);
+    } else if (response.menu == '85') {
+        await deleteData(label);
     } else if (response.menu == '80') {
         await addData(label);
     } else {
@@ -225,7 +238,7 @@ const editLabelName = async function (label) {
 };
 
 //
-//
+// Edit an existing data item
 //
 const editData = async function (data) {
 
@@ -263,6 +276,49 @@ const editData = async function (data) {
 };
 
 //
+// Delete one of the data entries
+//
+const deleteData = async function (label) {
+
+    let data = label.getData();
+
+    // display the data
+    console.log(chalk.green('Delete Watch Data for Label: ' + label.getLabel()));
+
+    // Build the choices, based upon the data
+    let choices = [];
+    for (let i = 0; i < data.length; i++) {
+        choices.push({
+            title: String.fromCharCode(9641) + ' ' + data[i],
+            value: i
+        });
+    }
+
+    // Add the back to menu option
+    choices.push({
+        title: String.fromCharCode(9204) + ' Back to Label Menu',
+        value: '99'
+    });
+
+    let response = await prompts({
+        type: 'select',
+        name: 'menu',
+        message: 'Select Entry to Delete',
+        choices: choices
+    });
+
+    // based upon the response grab the label and edit it
+    if (response.menu == '99') {
+        // back to main menu
+        return;
+    }
+
+    // delete the data
+    label.removeData(response.menu);
+}
+
+
+//
 // Add new data to the given label
 //
 const addData = async function (label) {
@@ -295,9 +351,9 @@ const addData = async function (label) {
 };
 
 
-/**
- * Delete a label and all associated data
- */
+//
+// Delete a label and all associated data
+//
 const deleteLabel = async function () {
 
 
