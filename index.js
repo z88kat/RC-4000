@@ -130,11 +130,11 @@ const readConsole = async function () {
                     value: '2',
                     description: 'Send data to the watch'
                 },
-                {
-                    title: 'Print Watch Data',
-                    description: 'Print the current watch data',
-                    value: '3'
-                },
+                // {
+                //     title: 'Print Watch Data',
+                //     description: 'Print the current watch data',
+                //     value: '3'
+                // },
                 {
                     title: 'System Menu',
                     description: 'Load and save data',
@@ -156,9 +156,10 @@ const readConsole = async function () {
             case '2':
                 await communicationsMenu();
                 break;
-            case '3':
-                await printWatchData();
-                break;
+                // There is no easy way to print the watch data
+                // case '3':
+                //     await printWatchData();
+                //     break;
             case '4':
                 await systemMenu();
                 break;
@@ -172,14 +173,17 @@ const readConsole = async function () {
     }
 };
 
+// Clear the console
+console.clear();
+
 // Will display the current data and time, like a watch
-// Get the current date in the format DD-MM DAY
-const dateFormat = moment().format('DD-MM ddd') + ' ' + moment().format('HH:mm:ss');
 // Set the current date time and update once per second
 let timer = setInterval(() => {
+    // Get the current date in the format DD-MM DAY
+    const dateFormat = moment().format('DD-MM ddd') + ' ' + moment().format('HH:mm:ss');
     process.stdout.clearLine();
     process.stdout.cursorTo(0);
-    //    process.stdout.cursorTo(process.stdout.columns - (date.length + 15));
+    //process.stdout.cursorTo(process.stdout.columns - (date.length + 15));
     process.stdout.write(chalk.magenta(dateFormat));
 }, 1000);
 
@@ -187,8 +191,7 @@ let timer = setInterval(() => {
 // Let us start
 //
 
-// Clear the console
-console.clear();
+
 
 let line = '';
 for (let i = 0; i < 34; i++) {
@@ -232,4 +235,6 @@ if (response.value) {
     }).finally(() => {
         process.exit(0); // ensure that we really exit the process
     });
+} else {
+    process.exit(0);
 }

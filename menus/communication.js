@@ -26,16 +26,13 @@ const communicationsMenu = async function () {
         ],
     });
 
-    switch (response.menu) {
-        case '1':
+    // Send the data to the watch
+    if (response.menu == 1) {
+        try {
             await sendData();
-            break;
-        case '5':
-            //            console.log(chalk.green('Quitting'));
-            break;
-        default:
-            //          console.log(chalk.green('Quitting'));
-            break;
+        } catch (error) {
+            console.error(error);
+        }
     }
 };
 

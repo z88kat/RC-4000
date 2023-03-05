@@ -22,7 +22,7 @@ const editCreateWatchData = async function () {
 
 
     // Clear the console
-    console.clear();
+    //console.clear();
 
     // display the labels we are going to edit
     let labels = watch.getLabels();
@@ -133,11 +133,19 @@ const addLabel = async function (labelType) {
         message: 'Enter Label Name',
         validate: value => value.length < 25 ? true : 'Too long',
         onRender(kleur) {
+
             // Print the length of the value and prevent the user from typing more than 24 characters
-            this.msg = kleur.yellow(this.value.length || '0');
-            if (this.value.length > 24) {
-                this.msg = kleur.red(this.value.length - 1);
-                this.value = this.value.substring(0, 24);
+            let labelLength = this.value.length || 0;
+            if (labelLength >= 10) {
+                this.msg = kleur.yellow(labelLength);
+                // Check if the string is too long and block the input, 24 chars is the limit
+                if (this.value.length > 24) {
+                    this.msg = kleur.red(this.value.length - 1);
+                    this.value = this.value.substring(0, 24);
+                }
+            } else {
+                // Add a space as padding to stop it jumping around
+                this.msg = kleur.yellow(' ' + labelLength);
             }
         },
     });
@@ -546,6 +554,7 @@ const addData = async function (label) {
         type: 'text',
         name: 'value',
         message: 'data:',
+        //description: 'Add data - ' + label.getLabel(),
         validate: value => value.length <= maxLength ? true : 'Too long',
         onRender(kleur) {
             // Print the length of the value and prevent the user from typing more than 24 characters
@@ -581,6 +590,7 @@ const deleteLabel = async function () {
     for (let i = 0; i < labels.length; i++) {
         choices.push({
             title: String.fromCharCode(9642) + ' ' + labels[i].label,
+            description: 'Remove this label',
             value: i
         });
     }
