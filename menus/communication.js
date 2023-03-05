@@ -15,10 +15,12 @@ const communicationsMenu = async function () {
         message: 'Communication Menu',
         choices: [{
                 title: 'Send Data to Watch',
+                description: 'Send data to the watch over the serial port',
                 value: '1'
             },
             {
-                title: '< Main Menu',
+                title: String.fromCharCode(9204) + ' Main Menu',
+                description: 'Return to the main menu',
                 value: '5'
             }
         ],

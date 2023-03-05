@@ -22,37 +22,42 @@ const systemMenu = async function () {
         console.log(chalk.green(`Name File: ${filename}`));
     }
 
-    let response = await prompts({
-        type: 'select',
-        name: 'menu',
-        message: 'System Menu',
-        choices: [{
-                title: 'Load Data',
-                value: '1'
-            },
-            {
-                title: 'Save Data',
-                value: '2'
-            },
-            {
-                title: 'Back to Main Menu',
-                value: '5'
-            }
-        ],
-    });
-    if (response.menu == '1') {
-        let success = await loadFile();
-        if (!success) {
-            await systemMenu();
-        }
+    // Display the menu for saving and loading data until quit is selected
+    let response = {
+        menu: '0'
+    };
+    while (response.menu != '5') {
+        response = await prompts({
+            type: 'select',
+            name: 'menu',
+            message: 'System Menu',
+            choices: [{
+                    title: 'Load Data',
+                    description: 'Load watch data from a file',
+                    value: '1'
+                },
+                {
+                    title: 'Save Data',
+                    description: 'Save watch data to a file',
+                    value: '2'
+                },
+                {
+                    title: String.fromCharCode(9204) + ' Main Menu',
+                    description: 'Return to the main menu',
+                    value: '5'
+                }
+            ],
+        });
+        if (response.menu == '1') {
+            let success = await loadFile();
+            if (success) response.menu = '5';
 
-    } else if (response.menu == '2') {
-        let success = await saveFile();
-        if (!success) {
-            await systemMenu();
+        } else if (response.menu == '2') {
+            let success = await saveFile();
+            if (success) response.menu = '5';
         }
-    }
-    //    console.log(response);
+    } // loop menu until quit or saved / loaded the data
+
 };
 
 //
@@ -84,6 +89,13 @@ const loadFile = async function () {
 
 //
 // Save the watch data to a file
+// The data needs to be saved in the correct order
+//
+// 1. Number of lines
+// 2. Weekly Alarm Label + Data (type 2)
+// 3. Scheduled Alarm Label + Data (type 1)
+// 4. Memo Label + Data (type 0)
+// End of file marker
 //
 const saveFile = async function () {
 
@@ -103,6 +115,7 @@ const saveFile = async function () {
         return false;
     }
 
+    // Build the RC Compatible data file
     let filedata = buildRCData();
 
     // finally we are done
@@ -115,10 +128,13 @@ const saveFile = async function () {
 // Build the RC data string to be send to the watch, save it to a file
 //
 const buildRCData = function (data) {
+
     // Write out the labels, data and any padding to fill the file to 2000 bytes of data
     // This data file is sent to the watch
 
-    let labels = watch.getLabels();
+    // The labels need to be in the correct order
+    let labels = [...watch.getWeeklyAlarmLabel(), ...watch.getScheduledAlarmLabel(), ...watch.getMemoLabels()];
+
     let numberOfLines = watch.getNumberOfLines();
     console.log('Number of lines: ' + numberOfLines);
 

@@ -101,9 +101,6 @@ const start = async function () {
     // Now read console input
     await readConsole();
 
-    //term.moveTo(1, 1, 'Hello, world!')
-    //term.red('Helloer, world!')
-
 };
 
 
@@ -116,29 +113,36 @@ const readConsole = async function () {
         menu: '1'
     };
 
+    // Continue to display the menu unti quit is selected
     while (response.menu != '5') {
+        console.clear();
         response = await prompts({
             type: 'select',
             name: 'menu',
             message: 'Main Menu',
             choices: [{
                     title: 'Edit Create Watch Data',
+                    description: 'Edit or create watch data',
                     value: '1'
                 },
                 {
                     title: 'Communications Menu',
-                    value: '2'
+                    value: '2',
+                    description: 'Send data to the watch'
                 },
                 {
                     title: 'Print Watch Data',
+                    description: 'Print the current watch data',
                     value: '3'
                 },
                 {
                     title: 'System Menu',
+                    description: 'Load and save data',
                     value: '4'
                 },
                 {
-                    title: 'Quit Program',
+                    title: String.fromCharCode(9204) + ' Quit Program',
+                    description: 'Quit the program',
                     value: '5'
                 }
             ],
@@ -161,42 +165,71 @@ const readConsole = async function () {
             case '5':
                 console.log(chalk.green('Quitting'));
                 break;
+            default:
+                console.log(chalk.red('Invalid option'));
+                break;
         }
     }
 };
 
-
-
-
-// Set the current date time and update once per second
-/*setInterval(() => {
-
-    // Get the current date in the format DD-MM DAY
-    let date = moment().format('DD-MM ddd') + ' ' + moment().format('HH:mm:ss');
-    process.stdout.clearLine();
-    process.stdout.cursorTo(process.stdout.columns - (date.length + 15));
-    process.stdout.write(date + ' ' + moment().format('HH:mm:ss'));
-
-}, 1000);*/
-
-
+// Will display the current data and time, like a watch
 // Get the current date in the format DD-MM DAY
-let date = moment().format('DD-MM ddd') + ' ' + moment().format('HH:mm:ss');
+const dateFormat = moment().format('DD-MM ddd') + ' ' + moment().format('HH:mm:ss');
+// Set the current date time and update once per second
+let timer = setInterval(() => {
+    process.stdout.clearLine();
+    process.stdout.cursorTo(0);
+    //    process.stdout.cursorTo(process.stdout.columns - (date.length + 15));
+    process.stdout.write(chalk.magenta(dateFormat));
+}, 1000);
 
+//
 // Let us start
+//
 
 // Clear the console
-process.stdout.write("\u001b[2J\u001b[0;0H");
+console.clear();
 
+let line = '';
+for (let i = 0; i < 34; i++) {
+    line += String.fromCharCode(8213);
+}
+
+// Take a look here for some ascii art
+// https://symbl.cc/en/search/?q=square
 console.log(chalk.blue('SEIKO'));
 console.log(chalk.blue('Wrist Terminal RC-4000'));
 console.log(chalk.blue('Data Manager Program'));
-console.log(chalk.magenta(String.fromCharCode(9608) + ' Version ' + VERSION) + ' ' + String.fromCharCode(183) + ' ' + chalk.magenta(date));
-console.log(chalk.magenta(''));
-start().catch(err => {
-    console.error('Error:');
-    console.log(err);
-    console.error('');
-}).finally(() => {
-    process.exit(0); // ensure that we really exit the process
+console.log(chalk.gray(line));
+console.log(chalk.magenta(String.fromCharCode(9608) + ' Version ' + VERSION) + ' ' + String.fromCharCode(183) + ' ' + options.load);
+console.log(chalk.gray(line));
+console.log(chalk.gray('Please read the operation manual before using this program.'));
+console.log(chalk.gray(line));
+console.log(chalk.white(String.fromCharCode(9642) + ' Schedule Alarms'));
+console.log(chalk.white(String.fromCharCode(9642)) + ' Weekly/Daily Alarms');
+console.log(chalk.white(String.fromCharCode(9642)) + ' Memos');
+console.log('');
+
+// This is a funny bug whereby the select prompt gets displayed twice, i work around it by displaying this
+// simple confirm prompt first
+let response = await prompts({
+    type: 'confirm',
+    name: 'value',
+    message: 'Continue?',
+    initial: true
 });
+
+// remove the display of the clock
+clearInterval(timer);
+
+// Clear the console
+if (response.value) {
+    console.clear();
+    start().catch(err => {
+        console.error('Error:');
+        console.error(err);
+        console.error('');
+    }).finally(() => {
+        process.exit(0); // ensure that we really exit the process
+    });
+}
