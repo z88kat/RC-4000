@@ -433,6 +433,96 @@ const editAlarmData = async function (label, index) {
 
 };
 
+//
+// Edit existing scheduled alarm month, day and time
+//
+const editScheduleData = async function (label, index) {
+
+    let isLoaded = false;
+
+    let response = {
+        value: '0'
+    }
+
+    let choices = [];
+
+    choices.push({
+        title: String.fromCharCode(8860) + ' Modify Label Name',
+        value: '1'
+    });
+    choices.push({
+        title: 'AM-PM',
+        value: '2'
+    });
+    choices.push({
+        title: 'Hours',
+        value: '3'
+    });
+    choices.push({
+        title: 'Minutes',
+        value: '4'
+    });
+    choices.push({
+        title: 'Month',
+        value: '5'
+    });
+    choices.push({
+        title: 'Day',
+        value: '6'
+    });
+    choices.push({
+        title: String.fromCharCode(9204) + ' Back to Data Menu',
+        value: '99'
+    });
+
+    while (response.value != '99') {
+
+        let data = label.getDataIndex(index);
+
+        // Edit the data on the command line
+        response = await prompts({
+            type: 'select',
+            name: 'value',
+            message: data.full_label,
+            choices: choices
+        });
+
+        if (!response.value) {
+            response.value = '99';
+        }
+
+        switch (response.value) {
+            case '1':
+                // Edit the label name
+                //await editLabelName(label);
+                break;
+            case '2':
+                // Edit the AM/PM
+                await toggleAMPM(label, index);
+                break;
+            case '3':
+                // Edit the Hours
+                await editHours(label, index);
+                break;
+            case '4':
+                // Edit the Minutes
+                await editMinutes(label, index);
+                break;
+            case '5':
+                // Edit the Month
+                await editMonth(label, index);
+                break;
+            case '6':
+                // Edit the Day of the Month
+                await editScheduledDay(label, index);
+                break;
+        }
+    }
+
+    // Get and return the value
+    //    return response.value;
+
+};
 
 //
 // Toggle the time between AM and PM
@@ -639,96 +729,46 @@ const editDays = async function (label, index) {
     label.setDay(index, response.value);
 }
 
+
 //
-// Edit existing scheduled alarm month, day and time
+// Add new data to the given label
 //
-const editScheduleData = async function (label, index) {
+const addData = async function (label) {
 
     let isLoaded = false;
 
-    let response = {
-        value: '0'
+    // The max length of the data is 24 characters for memo and 12 characters for alarm
+    let maxLength = 24;
+    if (!label.isMemo()) {
+        maxLength = 12;
     }
 
-    let choices = [];
-
-    choices.push({
-        title: String.fromCharCode(8860) + ' Modify Label Name',
-        value: '1'
-    });
-    choices.push({
-        title: 'AM-PM',
-        value: '2'
-    });
-    choices.push({
-        title: 'Hours',
-        value: '3'
-    });
-    choices.push({
-        title: 'Minutes',
-        value: '4'
-    });
-    choices.push({
-        title: 'Month',
-        value: '5'
-    });
-    choices.push({
-        title: 'Day',
-        value: '6'
-    });
-    choices.push({
-        title: String.fromCharCode(9204) + ' Back to Data Menu',
-        value: '99'
-    });
-
-    while (response.value != '99') {
-
-        let data = label.getDataIndex(index);
-
-        // Edit the data on the command line
-        response = await prompts({
-            type: 'select',
-            name: 'value',
-            message: data.full_label,
-            choices: choices
-        });
-
-        if (!response.value) {
-            response.value = '99';
+    // Edit the data on the command line
+    let response = await prompts({
+        type: 'text',
+        name: 'value',
+        message: 'data:',
+        //description: 'Add data - ' + label.getLabel(),
+        validate: value => value.length <= maxLength ? true : 'Too long',
+        onRender(kleur) {
+            // Print the length of the value and prevent the user from typing more than 24 characters
+            this.msg = kleur.yellow(this.value.length);
+            if (this.value.length > maxLength) {
+                this.msg = kleur.red(this.value.length - 1);
+                this.value = this.value.substring(0, maxLength);
+            }
+        },
+        onState(state) {
+            //console.log(state);
         }
+    });
 
-        switch (response.value) {
-            case '1':
-                // Edit the label name
-                //await editLabelName(label);
-                break;
-            case '2':
-                // Edit the AM/PM
-                await toggleAMPM(label, index);
-                break;
-            case '3':
-                // Edit the Hours
-                await editHours(label, index);
-                break;
-            case '4':
-                // Edit the Minutes
-                await editMinutes(label, index);
-                break;
-            case '5':
-                // Edit the Month
-                await editMonth(label, index);
-                break;
-            case '6':
-                // Edit the Day of the Month
-                await editScheduledDay(label, index);
-                break;
-        }
+    if (response.value && response.value.length > 0) {
+        label.addRawData(response.value);
     }
-
-    // Get and return the value
-    //    return response.value;
 
 };
+
 
 //
 // Delete one of the data entries
@@ -772,45 +812,6 @@ const deleteData = async function (label) {
     label.removeData(response.menu);
 }
 
-
-//
-// Add new data to the given label
-//
-const addData = async function (label) {
-
-    let isLoaded = false;
-
-    // The max length of the data is 24 characters for memo and 12 characters for alarm
-    let maxLength = 24;
-    if (!label.isMemo()) {
-        maxLength = 12;
-    }
-
-    // Edit the data on the command line
-    let response = await prompts({
-        type: 'text',
-        name: 'value',
-        message: 'data:',
-        //description: 'Add data - ' + label.getLabel(),
-        validate: value => value.length <= maxLength ? true : 'Too long',
-        onRender(kleur) {
-            // Print the length of the value and prevent the user from typing more than 24 characters
-            this.msg = kleur.yellow(this.value.length);
-            if (this.value.length > maxLength) {
-                this.msg = kleur.red(this.value.length - 1);
-                this.value = this.value.substring(0, maxLength);
-            }
-        },
-        onState(state) {
-            //console.log(state);
-        }
-    });
-
-    if (response.value && response.value.length > 0) {
-        label.addRawData(response.value);
-    }
-
-};
 
 
 //

@@ -115,12 +115,21 @@ const saveFile = async function () {
         return false;
     }
 
-    // Build the RC Compatible data file
-    let filedata = buildRCData();
+    try {
 
-    // finally we are done
-    fs.writeFileSync(response.filename, filedata, 'utf8');
-    console.log(chalk.greenBright('File saved'));
+        // Build the RC Compatible data file
+        let filedata = buildRCData();
+
+        // finally we are done
+        fs.writeFileSync(response.filename, filedata, 'utf8');
+        console.log(chalk.greenBright('File saved'));
+
+        // If we get here then we have saved the file
+        watch.setFilename(response.filename);
+    } catch (err) {
+        console.error(err);
+        console.log(chalk.redBright('Error saving file'));
+    }
 
 };
 
