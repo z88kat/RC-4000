@@ -111,7 +111,7 @@ const editCreateWatchData = async function () {
         // back to main menu
         return;
     } else {
-        // Add Data entries to the selected label
+        // Add Data entries to the selected label, memo, weekly, schedule
         await editLabel(response.menu);
     }
 
@@ -172,6 +172,7 @@ const addLabel = async function (labelType) {
 
 //
 // Edit the watch label , display all the data attached to the label
+// either memo, weekly, schedule
 //
 const editLabel = async function (index) {
 
@@ -247,18 +248,23 @@ const editLabel = async function (index) {
     } else {
 
         // edit the selected data stored in the label
-        let value;
         if (label.isMemo()) {
-            value = await editMemoData(data[response.menu]);
+            let value = await editMemoData(data[response.menu]);
+
+
+            // If the value is empty then delete the data
+            if (value == '') {
+                data.splice(response.menu, 1);
+            } else if (value) {
+                data[response.menu] = value;
+            }
+
+        } else if (label.isWeeklyAlarm()) {
+            await editAlarmData(label, response.menu);
         } else {
-            value = await editAlarmData(label, response.menu);
+            await editScheduleData(label, response.menu);
         }
-        // If the value is empty then delete the data
-        if (value == '') {
-            data.splice(response.menu, 1);
-        } else if (value) {
-            data[response.menu] = value;
-        }
+
     }
     // redraw the screen
     await editLabel(index);
@@ -345,7 +351,7 @@ const editMemoData = async function (data) {
 
 
 //
-//
+// Edit existing alarm day and time data
 //
 const editAlarmData = async function (label, index) {
 
@@ -378,12 +384,11 @@ const editAlarmData = async function (label, index) {
         value: '5'
     });
     choices.push({
-        title: 'Quit',
+        title: String.fromCharCode(9204) + ' Back to Data Menu',
         value: '99'
     });
 
     while (response.value != '99') {
-
 
         let data = label.getDataIndex(index);
 
@@ -472,7 +477,7 @@ const editHours = async function (label, index) {
 }
 
 //
-// Set the hour for the alarm
+// Set the minutes for the alarm
 //
 const editMinutes = async function (label, index) {
 
@@ -492,6 +497,238 @@ const editMinutes = async function (label, index) {
     label.setMinute(index, response.value);
 }
 
+
+//
+// Set the month for the alarm
+//
+const editMonth = async function (label, index) {
+
+    let data = label.getDataIndex(index);
+
+    // Set a prompt displaying the months to choose from
+    let response = await prompts({
+        type: 'select',
+        name: 'value',
+        message: 'Month:',
+        choices: [{
+
+                title: 'January',
+                value: '1'
+            },
+            {
+                title: 'February',
+                value: '2'
+            },
+            {
+                title: 'March',
+                value: '3'
+            },
+            {
+                title: 'April',
+                value: '4'
+            },
+            {
+                title: 'May',
+                value: '5'
+            },
+            {
+                title: 'June',
+                value: '6'
+            },
+            {
+                title: 'July',
+                value: '7'
+            },
+            {
+                title: 'August',
+                value: '8'
+            },
+            {
+                title: 'September',
+                value: '9'
+            },
+            {
+                title: 'October',
+                value: '10'
+            },
+            {
+                title: 'November',
+                value: '11'
+            },
+            {
+                title: 'December',
+                value: '12'
+            }
+        ]
+    });
+
+
+    label.setMonth(index, response.value);
+}
+
+//
+// Set the days for the scheduled alarm (1-31)
+//
+const editScheduledDay = async function (label, index) {
+
+    let data = label.getDataIndex(index);
+
+
+    let response = await prompts({
+        type: 'number',
+        name: 'value',
+        message: 'Day of Month (1-31):',
+        initial: data.day,
+        increment: 1,
+        style: 'default',
+        min: 1,
+        max: 31
+    });
+
+    if (response.value) label.setDay(index, response.value);
+
+}
+
+//
+// Editing of the day of the for the weekly alarm
+//
+const editDays = async function (label, index) {
+
+    let data = label.getDataIndex(index);
+
+    let response = await prompts({
+        type: 'select',
+        name: 'value',
+        message: 'Day:',
+        choices: [{
+                title: 'Sunday',
+                value: 'SUN'
+            },
+            {
+                title: 'Monday',
+                value: 'MON'
+            },
+            {
+                title: 'Tuesday',
+                value: 'TUE'
+            },
+            {
+                title: 'Wednesday',
+                value: 'WED'
+            },
+            {
+                title: 'Thursday',
+                value: 'THU'
+            },
+            {
+                title: 'Friday',
+                value: 'FRI'
+            },
+            {
+                title: 'Saturday',
+                value: 'SAT'
+            },
+            {
+                title: 'Every Day',
+                value: 'DAY'
+            },
+        ],
+        initial: data.days
+    });
+
+    label.setDay(index, response.value);
+}
+
+//
+// Edit existing scheduled alarm month, day and time
+//
+const editScheduleData = async function (label, index) {
+
+    let isLoaded = false;
+
+    let response = {
+        value: '0'
+    }
+
+    let choices = [];
+
+    choices.push({
+        title: String.fromCharCode(8860) + ' Modify Label Name',
+        value: '1'
+    });
+    choices.push({
+        title: 'AM-PM',
+        value: '2'
+    });
+    choices.push({
+        title: 'Hours',
+        value: '3'
+    });
+    choices.push({
+        title: 'Minutes',
+        value: '4'
+    });
+    choices.push({
+        title: 'Month',
+        value: '5'
+    });
+    choices.push({
+        title: 'Day',
+        value: '6'
+    });
+    choices.push({
+        title: String.fromCharCode(9204) + ' Back to Data Menu',
+        value: '99'
+    });
+
+    while (response.value != '99') {
+
+        let data = label.getDataIndex(index);
+
+        // Edit the data on the command line
+        response = await prompts({
+            type: 'select',
+            name: 'value',
+            message: data.full_label,
+            choices: choices
+        });
+
+        if (!response.value) {
+            response.value = '99';
+        }
+
+        switch (response.value) {
+            case '1':
+                // Edit the label name
+                //await editLabelName(label);
+                break;
+            case '2':
+                // Edit the AM/PM
+                await toggleAMPM(label, index);
+                break;
+            case '3':
+                // Edit the Hours
+                await editHours(label, index);
+                break;
+            case '4':
+                // Edit the Minutes
+                await editMinutes(label, index);
+                break;
+            case '5':
+                // Edit the Month
+                await editMonth(label, index);
+                break;
+            case '6':
+                // Edit the Day of the Month
+                await editScheduledDay(label, index);
+                break;
+        }
+    }
+
+    // Get and return the value
+    //    return response.value;
+
+};
 
 //
 // Delete one of the data entries
