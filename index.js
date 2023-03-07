@@ -192,49 +192,63 @@ let timer = setInterval(() => {
 //
 
 
+const letsGetStarted = async function () {
 
-let line = '';
-for (let i = 0; i < 34; i++) {
-    line += String.fromCharCode(8213);
-}
 
-// Take a look here for some ascii art
-// https://symbl.cc/en/search/?q=square
-console.log(chalk.blue('SEIKO'));
-console.log(chalk.blue('Wrist Terminal RC-4000'));
-console.log(chalk.blue('Data Manager Program'));
-console.log(chalk.gray(line));
-console.log(chalk.magenta(String.fromCharCode(9608) + ' Version ' + VERSION) + ' ' + String.fromCharCode(183) + ' ' + options.load);
-console.log(chalk.gray(line));
-console.log(chalk.gray('Please read the operation manual before using this program.'));
-console.log(chalk.gray(line));
-console.log(chalk.white(String.fromCharCode(9642) + ' Schedule Alarms'));
-console.log(chalk.white(String.fromCharCode(9642)) + ' Weekly/Daily Alarms');
-console.log(chalk.white(String.fromCharCode(9642)) + ' Memos');
-console.log('');
+    let line = '';
+    for (let i = 0; i < 34; i++) {
+        line += String.fromCharCode(8213);
+    }
 
-// This is a funny bug whereby the select prompt gets displayed twice, i work around it by displaying this
-// simple confirm prompt first
-let response = await prompts({
-    type: 'confirm',
-    name: 'value',
-    message: 'Continue?',
-    initial: true
-});
+    // Take a look here for some ascii art
+    // https://symbl.cc/en/search/?q=square
+    console.log(chalk.blue('SEIKO'));
+    console.log(chalk.blue('Wrist Terminal RC-4000'));
+    console.log(chalk.blue('Data Manager Program'));
+    console.log(chalk.gray(line));
+    console.log(chalk.magenta(String.fromCharCode(9608) + ' Version ' + VERSION) + ' ' + String.fromCharCode(183) + ' ' + options.load);
+    console.log(chalk.gray(line));
+    console.log(chalk.gray('Please read the operation manual before using this program.'));
+    console.log(chalk.gray(line));
+    console.log(chalk.white(String.fromCharCode(9642) + ' Schedule Alarms'));
+    console.log(chalk.white(String.fromCharCode(9642)) + ' Weekly/Daily Alarms');
+    console.log(chalk.white(String.fromCharCode(9642)) + ' Memos');
+    console.log('');
 
-// remove the display of the clock
-clearInterval(timer);
-
-// Clear the console
-if (response.value) {
-    console.clear();
-    start().catch(err => {
-        console.error('Error:');
-        console.error(err);
-        console.error('');
-    }).finally(() => {
-        process.exit(0); // ensure that we really exit the process
+    // This is a funny bug whereby the select prompt gets displayed twice, i work around it by displaying this
+    // simple confirm prompt first
+    let response = await prompts({
+        type: 'confirm',
+        name: 'value',
+        message: 'Continue?',
+        initial: true
     });
-} else {
-    process.exit(0);
-}
+
+    // remove the display of the clock
+    clearInterval(timer);
+
+
+    // Clear the console
+    if (response.value) {
+        console.clear();
+        start().catch(err => {
+            console.error('Error:');
+            console.error(err);
+            console.error('');
+        }).finally(() => {
+            process.exit(0); // ensure that we really exit the process
+        });
+    } else {
+        process.exit(0);
+    }
+
+};
+
+
+//
+// Display welcome message and start prompt
+//
+letsGetStarted().catch(err => {
+    console.error('Error:');
+    console.error(err);
+});
