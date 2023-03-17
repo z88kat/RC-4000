@@ -1,12 +1,12 @@
  18
-L - FLIGHT ---- SCHEDULE - 0
-d NYC-LON     BA178 13:45  0
-L - PHONE ------ NUMBERS - 0
-d ABC CORP    012-234-2314 0
-d RICHARD D   045-364-1453 0
-d JANE B      053-156-2314 0
-d DOC KURTZ   098-136-2931 0
-d BOB-HOME    034-967-1789 0
+L - WEEKLY ------- ALARM - 2
+d MGR MEETING 1 MON A10:00 2
+d CALL BROKER 3 WED A01:00 2
+d RACQUET BALL4 THU P06:00 2
+d JOGGING     7 DAY A06:30 2
+d  - - - - -               0
+d  - - - - -               0
+d  - - - - -               0
 d  - - - - -               0
 d  - - - - -               0
 d  - - - - -               0
