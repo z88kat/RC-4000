@@ -69,8 +69,15 @@ const sections = [{
     }
 ];
 
-const usage = commandLineUsage(sections);
-const options = commandLineArgs(optionDefinitions);
+
+let usage, options;
+try {
+    usage = commandLineUsage(sections);
+    options = commandLineArgs(optionDefinitions);
+} catch (err) {
+    console.log(chalk.redBright('Error parsing command line options. try --help'));
+    process.exit(1);
+}
 
 /**
  * Start the job
@@ -115,7 +122,7 @@ const readConsole = async function () {
 
     // Continue to display the menu unti quit is selected
     while (response.menu != '5') {
-        console.clear();
+        // console.clear();
         response = await prompts({
             type: 'select',
             name: 'menu',
