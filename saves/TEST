@@ -1,9 +1,19 @@
  18
-L - WEEKLY ------- ALARM - 2
-d MGR MEETING 1 MON A10:00 2
-d CALL BROKER 3 WED A01:00 2
-d RACQUET BALL4 THU P06:00 2
-d JOGGING     7 DAY A06:30 2
+L - FLIGHT ---- SCHEDULE - 0
+d NYC-LON     BA178 13:45  0
+d NRT-LAX     JL062 17:40  0
+d JFK-ORD     AA456 13:30  0
+L - PHONE ------ NUMBERS - 0
+d ABC CORP    012-234-2314 0
+d  - - - - -               0
+d  - - - - -               0
+d  - - - - -               0
+d  - - - - -               0
+d  - - - - -               0
+d  - - - - -               0
+d  - - - - -               0
+d  - - - - -               0
+d  - - - - -               0
 d  - - - - -               0
 d  - - - - -               0
 d  - - - - -               0

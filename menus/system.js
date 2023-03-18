@@ -173,9 +173,13 @@ const buildRCData = function (data) {
     for (let i = 0; i < linesToWrite; i++) {
         filedata += 'd ' + EmptyData + ' 0\r\n';
     }
-    // Write the finale line, i have no idea what this is
-    // The number should be something i guess...
-    filedata += ' 0\r\n';
+    // Write the finale line, this appears to be the number of labels
+    let getNumberOfLabels = watch.getNumberOfLabels();
+    // Pad the number with a space if < 10
+    if (getNumberOfLabels < 10) {
+        getNumberOfLabels = ' ' + getNumberOfLabels;
+    }
+    filedata += getNumberOfLabels + '\r\n';
 
     // We need to append the hex code 1A to the end of the file
     // I believe this is the end of file marker
