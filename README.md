@@ -34,13 +34,13 @@ node index.js
 You can also specify the port to use with the `--port` option:
 
 ```
-npm start --port /dev/ttyUSB0
+node index.js --port /dev/ttyUSB0
 ```
 
 You can also specify the file to load with the `--load` option:
 
 ```
-npm start --load /path/to/file
+node index.js --load /path/to/file
 ```
 
 
@@ -60,7 +60,87 @@ This will be reset once you disconnect the device. So you need to run this comma
 
 The data file uses the origial data format from the Sekio RC-4000 MSDOS application.  The files are interchangeable between the two applications.
 
-## Weekly Alarm Format
+There is probably no reason to do this, but I did it anyway.  If you happen to have an old data file for your watch it will work just fine.
+
+## Data File Specifications
+
+There is no documentation for the original sekio data file format.  The following is what i managed to work out from the data file.
+
+## Start of File Marker
+
+The header of the file consists of a space (0x20) + number of lines of data + 0x0D + 0x0A.
+
+For example the following header is for a file with 18 lines of data:
+
+```
+ 0x20 0x31 0x38 0x0D 0x0A
+```
+
+## Label & Data Entries
+
+There are 2 types of data:
+- L - Label
+- d - Data
+
+There are 3 sub-sets of the label:
+- 2 Weekly Alarms
+- 1 Scheduled Alarm
+- 0 Memos
+
+Upto a maximum of 11 labels are possible, 1 week alarm, 1 scheduled alarm and 9 memos.  If you skip the alarms this means you can create upto 11 memo labels.
+
+There does not appear to be limit of the number of data entries.  Thus it should be possible to create one memo label + 79 data entries. Although navigating those on watch is probably not much fun.  Best is to limi the number of data entries to 5 or 6 per label.
+
+The total number of entries is limited to 80 (labels + data).
+
+
+## Label Format
+
+The label is 24 bytes long.  The watch display 2 lines of 12 characters.  The label is split into 2 lines.
+
+The label is identified by 0x4C (L) followed by a space, 24 bytes of data a space and label type.
+
+- 2 Weekly Alarms
+- 1 Scheduled Alarm
+- 0 Memos
+
+The label has the following format
+
+L[SPACE][label][SPACE][label type][0x0D 0x0A]
+
+```
+L - WEEKLY ------- ALARM - 2
+L - SCHEDULE ----- ALARM - 1
+L - PHONE ------   MEMO  - 0
+```
+
+## Weekly Alarm Data Format
+
+Weekly alarms are those set for a specific day of the week and repeat every week.
+
+Only one weekly alarm label is possible.  The weekly alarm label must be the first label in the file and is the first label sent to the watch.
+
+The weekly data entry alarm is 24 bytes long.  12 bytes for the label and 12 bytes to define the alarm.
+
+The format is [#day] [DAY] ][AM/PM] [hour] [minute]
+
+The #day number starts at 0 for sunday. 7 indicates every day.
+
+The day is a 3 character string: SUN, MON, TUE, WED, THU, FRI, SAT, DAY (every day)
+
+The AM/PM is a 1 character string: A or P.
+
+The hour is a 2 character string: 00 to 12.  (12 is 12:00am)
+
+The minute is a 2 character string: 00 to 59.
+
+The saved data structure is as follows:
+
+d[SPACE][label][#day][SPACE][DAY][SPACE][A|P][hour]:[minute][SPACE]2[0x0D 0x0A]
+
+0x0D 0x0A is the new line character.
+
+It's not really clear to me why the day is specified twice. Maybe there was just space left over in the data structure.
 
 ```
 L - WEEKLY ------- ALARM - 2
@@ -74,7 +154,31 @@ d  - - - - -  0 SUN A12:00 2
 d  - - - - -  7 DAY A12:00 2
 ```
 
-## Scheduled Alarm Format
+## Scheduled Alarm Data Format
+
+Scheduled alarms are those set for a specific date.  THis label should appear directly after the weekly alarm label or first, if there is no weekly alarm label.
+
+Only one scheduled alarm label is possible.
+
+The scheduled data entry alarm is 24 bytes long.  12 bytes for the label and 12 bytes to define the alarm.
+
+The format is [MONTH]/[DAY] [AM/PM] [hour] [minute]
+
+The MONTH number starts at 01 for January.
+
+The DAY number starts at 01 for the first day of the month. You could enter 31 for February, but it would push the alarm to the next month.
+
+The AM/PM is a 1 character string: A or P.
+
+The hour is a 2 character string: 00 to 12.  (12 is 12:00am)
+
+The minute is a 2 character string: 00 to 59.
+
+The saved data structure is as follows:
+
+d[SPACE][label][MONTH]/[DAY][SPACE][A|P][hour]:[minute][SPACE]1[0x0D 0x0A]
+
+0x0D 0x0A is the new line character.
 
 ```
 L - SCHEDULE ----- ALARM - 1
@@ -84,7 +188,15 @@ d  - - - - -  01/01 A12:00 1
 d  - - - - -  01/01 A12:00 1
 ```
 
-## Memo Format
+## Memo Data Format
+
+The memo data entry is 24 bytes long.  The watch can display 2 lines of 12 characters each.  The watch will only display upper case ascii characters in the range 32 to 126. Any lower case characters will be displayed as upper case.
+
+The data structure is as follows:
+
+d[SPACE][label][SPACE]0[0x0D 0x0A]
+
+0x0D 0x0A is the new line character.
 
 ```
 L - FLIGHT ---- SCHEDULE - 0
@@ -98,3 +210,14 @@ d JANE B      053-156-2314 0
 d DOC KURTZ   098-136-2931 0
 d BOB-HOME    034-967-1789 0
 ```
+
+
+## End of file marker
+
+The end of the file appears to consist of the total number of labels + 0x1A (0x1A is the end of file marker).
+
+Example is for 4 labels
+```
+0x20 0x20 0x34 0x0D 0x0A 0x1A
+```
+
