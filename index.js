@@ -210,7 +210,7 @@ const letsGetStarted = async function () {
     // Take a look here for some ascii art
     // https://symbl.cc/en/search/?q=square
     console.log(chalk.blue('SEIKO'));
-    console.log(chalk.blue('Wrist Terminal RC-4000'));
+    console.log(chalk.blue('Wrist Terminal RC-1000 / RC-4000'));
     console.log(chalk.blue('Data Manager Program'));
     console.log(chalk.gray(line));
     console.log(chalk.magenta(String.fromCharCode(9608) + ' Version ' + VERSION) + ' ' + String.fromCharCode(183) + ' ' + options.load);

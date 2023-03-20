@@ -1,6 +1,107 @@
-<head>
+<html lang="en">
 
-<body>
-    <h1>This is my page</h1>
-</body>
-</head>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta http-equiv="Content-Security-Policy" content="script-src 'self'" />
+        <!-- jquery -->
+        <script src="js/jquery-3.6.4.min.js"></script>
+        <!-- bootstrap -->
+        <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+        <script src="js/bootstrap.bundle.js"></script>
+        <!-- showlace-->
+        <link rel="stylesheet" href="../node_modules/@shoelace-style/shoelace/dist/themes/light.css" />
+        <script type="module" src="../node_modules/@shoelace-style/shoelace/dist/shoelace.js"></script>
+        <!-- fontawesome -->
+        <link rel="stylesheet" href="css/all.css" type="text/css" />
+        <!-- custom -->
+        <link rel="stylesheet" href="css/style.css" />
+        <script src="js/renderer.js"></script>
+        <title>Seiko Wrist Terminal</title>
+    </head>
+
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div id="timestamp"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h1>Seiko Wrist Terminal</h1>
+                </div>
+            </div>
+            <div class="row pt-4 pl-4">
+                <div class="col">
+                    <div style="max-height: 500px;overflow-y: auto;">
+                        <table class="table">
+                            <tr>
+                                <td>
+                                    <i class="fa-regular fa-bell"></i>
+                                </td>
+                                <td>
+                                    TEXT
+                                </td>
+                                <td>
+                                    <i class="fa-regular fa-pen-to-square"></i>
+                                </td>
+                                <td>
+                                    <i class="fa-regular fa-trash-can"></i>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <i class="fa-regular fa-calendar-days"></i>
+                                </td>
+                                <td>
+                                    TEXT
+                                </td>
+                                <td>
+                                    <i class="fa-regular fa-pen-to-square"></i>
+                                </td>
+                                <td>
+                                    <i class="fa-regular fa-trash-can"></i>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <i class="fa-solid fa-tag"></i>
+                                </td>
+                                <td>
+                                    TEXT
+                                </td>
+                                <td>
+                                    <i class="fa-regular fa-pen-to-square"></i>
+                                </td>
+                                <td>
+                                    <i class="fa-regular fa-trash-can"></i>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="col text-center">
+                    <div class="p-2">
+                        <sl-button type="primary" id="btnGetTime" style="width:200px;">
+                            <i class="fa-regular fa-bell fa-fw pr-4"></i>Add Weekly Alarm
+                        </sl-button>
+                    </div>
+                    <div class="p-2">
+                        <sl-button type="primary" id="btnGetTime" style="width:200px;">
+                            <i class="fa-solid fa-calendar-days fa-fw pr-4"></i>Add Scheduled Alarm
+                        </sl-button>
+                    </div>
+                    <div class="p-2">
+                        <sl-button type="primary" id="btnGetTime" style="width:200px;">
+                            <i class="fa-solid fa-tag fa-fw pr-4"></i>Add Memo Label
+                        </sl-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+</html>

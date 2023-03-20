@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/z88kat/RC-4000#readme",
   "dependencies": {
+    "@shoelace-style/shoelace": "^2.3.0",
     "chalk": "^5.2.0",
     "command-line-args": "^5.2.1",
     "command-line-usage": "^6.1.3",

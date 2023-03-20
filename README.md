@@ -221,3 +221,13 @@ Example is for 4 labels
 0x20 0x20 0x34 0x0D 0x0A 0x1A
 ```
 
+
+# Development
+
+## Electron
+
+keep it running with electronmon
+
+```
+npx electronmon index-electron.cjs
+```
