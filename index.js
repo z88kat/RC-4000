@@ -9,20 +9,20 @@ import commandLineUsage from 'command-line-usage';
 import fs from 'fs-extra';
 import {
     parse
-} from "./lib/parser.js";
+} from "./lib/parser.mjs";
 import prompts from "prompts";
 import {
     systemMenu
-} from "./menus/system.js";
+} from "./menus/system.mjs";
 import {
     communicationsMenu
-} from "./menus/communication.js";
+} from "./menus/communication.mjs";
 import {
     editCreateWatchData
-} from "./menus/create.js";
+} from "./menus/create.mjs";
 import {
     watch
-} from "./lib/watch.js";
+} from "./lib/watch.mjs";
 
 import moment from 'moment';
 

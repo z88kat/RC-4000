@@ -25,7 +25,10 @@ function createWindow() {
         // allow resizing
         resizable: true,
         webPreferences: {
-            // preload: path.join(__dirname, "preload.mjs"),
+            contextIsolation: true,
+            nodeIntegration: true,
+            sandbox: false,
+            preload: path.join(__dirname, "/lib/preload.cjs"),
         },
     });
 

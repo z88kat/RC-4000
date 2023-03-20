@@ -6,13 +6,13 @@ import fs from "fs-extra";
 import chalk from "chalk";
 import {
     watch
-} from "../lib/watch.js";
+} from "../lib/watch.mjs";
 import {
     EmptyData
-} from "../lib/constants.js";
+} from "../lib/constants.mjs";
 import {
     parse
-} from "../lib/parser.js";
+} from "../lib/parser.mjs";
 
 //
 // Save/Load Watch Data

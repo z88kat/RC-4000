@@ -11,3 +11,25 @@
 body {
     font-family: 'Varela Round', sans-serif;
 }
+
+textarea {
+    resize: none;
+    max-width: 150px;
+    width: 150px;
+    min-width: 150px;
+    font-family: Courier;
+}
+
+input {
+    font-family: Courier;
+}
+
+/** mouse over a link make it orange */
+a:hover {
+    color: orange;
+}
+
+/** default link color is purple */
+a {
+    color: purple;
+}

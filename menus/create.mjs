@@ -4,13 +4,13 @@
 import prompts from "prompts";
 import {
     watch
-} from "../lib/watch.js";
+} from "../lib/watch.mjs";
 import {
     LabelType
-} from "../lib/constants.js";
-import Memo from "../lib/memo.js";
-import ScheduledAlarm from "../lib/scheduled-alarm.js";
-import WeeklyAlarm from "../lib/weekly-alarm.js";
+} from "../lib/constants.mjs";
+import Memo from "../lib/memo.mjs";
+import ScheduledAlarm from "../lib/scheduled-alarm.mjs";
+import WeeklyAlarm from "../lib/weekly-alarm.mjs";
 
 import chalk from "chalk";
 
