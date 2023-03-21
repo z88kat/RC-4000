@@ -16,10 +16,11 @@ const Menu = electron.Menu;
 // constant for development
 const isDev = process.env.NODE_ENV !== 'production';
 
+let win;
 
 // Create a new BrowserWindow when `app` is ready
 function createWindow() {
-    const win = new BrowserWindow({
+    win = new BrowserWindow({
         width: isDev ? 1200 : 800,
         height: 600,
         // allow resizing
@@ -95,6 +96,24 @@ const mainMenuTemplate = [{
                 aboutDialog();
             }
         }]
+    },
+    {
+        label: 'Communications',
+        submenu: [{
+            label: 'Set Port...',
+            accelerator: process.platform == 'darwin' ? 'Command+P' : 'Ctrl+P',
+            click() {
+                // Send the data
+                //  sendData();
+            }
+        }, {
+            label: 'Send Data',
+            accelerator: process.platform == 'darwin' ? 'Command+D' : 'Ctrl+D',
+            click() {
+                // Send the data
+                sendData();
+            }
+        }]
     }
 ];
 
@@ -120,3 +139,14 @@ app.on("window-all-closed", () => {
         app.quit();
     }
 });
+
+
+//
+// Send watch data to the watch
+//
+const sendData = () => {
+    // Send a message to init the communication
+    //win.webContents.send('menu-event', 'communication-send-data');
+    // Send a message to the window.
+    win.webContents.send('message:update', 'communication-send-data');
+}

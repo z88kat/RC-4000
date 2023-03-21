@@ -29,53 +29,9 @@
             </div>
             <div class="row pt-4 pl-4">
                 <div class="col pt-2">
-                    <div style="max-height: 500px;overflow-y: auto;">
+                    <div style="max-height: 400px;overflow-y: auto;">
                         <table class="table">
                             <tbody id="tableBody">
-                                <tr>
-                                    <td>
-                                        <i class="fa-regular fa-bell"></i>
-                                    </td>
-                                    <td>
-                                        TEXT
-                                    </td>
-                                    <td>
-                                        <i class="fa-regular fa-pen-to-square"></i>
-                                    </td>
-                                    <td>
-                                        <i class="fa-regular fa-trash-can"></i>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <i class="fa-regular fa-calendar-days"></i>
-                                    </td>
-                                    <td>
-                                        TEXT
-                                    </td>
-                                    <td>
-                                        <i class="fa-regular fa-pen-to-square"></i>
-                                    </td>
-                                    <td>
-                                        <i class="fa-regular fa-trash-can"></i>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <i class="fa-solid fa-tag"></i>
-                                    </td>
-                                    <td>
-                                        TEXT
-                                    </td>
-                                    <td>
-                                        <i class="fa-regular fa-pen-to-square"></i>
-                                    </td>
-                                    <td>
-                                        <i class="fa-regular fa-trash-can"></i>
-                                    </td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -96,8 +52,18 @@
                             <i class="fa-solid fa-tag fa-fw pr-4"></i>Add Memo Label
                         </sl-button>
                     </div>
+                    <div class="p-2">
+                        Labels Remainings: <span id="labelRemaining">0</span>
+                    </div>
                 </div>
             </div>
+            <!-- footer -->
+            <footer>
+                <div class="row p-2">
+                    <div class="col-12 text-center" id="footer">
+                    </div>
+                </div>
+            </footer>
         </div>
 
         <!-- Add / Edit a memo label -->
@@ -109,9 +75,37 @@
                 </div>
             </div>
             <sl-button slot="footer" variant="default" class="pr-2">Close</sl-button>
-            <sl-button slot="footer" variant="primary"><i class="fa-solid fa-plus"></i> Add</sl-button>
+            <sl-button slot="footer" variant="primary" id="btnAddMemoLabel"><i class="fa-solid fa-plus"></i> Add
+            </sl-button>
         </sl-dialog>
 
+        <!-- Add / Edit a weekly label -->
+        <sl-dialog label="Weekly Label" class="dialog-overview" id="dialog-weekly">
+            <div class="row">
+                <div class="col ml-4">
+                    <textarea required min="1" max="24" maxlength="24" class="form-control form-input" id="weekly-text"
+                        rows="2" cols="12"></textarea>
+                </div>
+            </div>
+            <sl-button slot="footer" variant="default" class="pr-2">Close</sl-button>
+            <sl-button slot="footer" variant="primary" id="btnAddWeeklyLabel">
+                <i class="fa-solid fa-plus"></i> Add
+            </sl-button>
+        </sl-dialog>
+
+        <!-- Add / Edit a scheduled label -->
+        <sl-dialog label="Scheduled Label" class="dialog-overview" id="dialog-scheduled">
+            <div class="row">
+                <div class="col ml-4">
+                    <textarea required min="1" max="24" maxlength="24" class="form-control form-input"
+                        id="scheduled-text" rows="2" cols="12"></textarea>
+                </div>
+            </div>
+            <sl-button slot="footer" variant="default" class="pr-2">Close</sl-button>
+            <sl-button slot="footer" variant="primary" id="btnAddScheduledLabel">
+                <i class="fa-solid fa-plus"></i> Add
+            </sl-button>
+        </sl-dialog>
 
     </body>
 
