@@ -1,9 +1,16 @@
+/**
+ * Frontend application code
+ */
+
+
 // jquery is ready
 $(document).ready(function () {
     // init the application
     initApplication();
     // check the label status and disable buttons if needed
     checkLabelNumberStatus();
+    // enable global validation
+    $('.form-submission').validate();
 });
 
 //
@@ -30,6 +37,9 @@ const initApplication = () => {
     // delete a label entry
     $(document).on('click', '.delete-entry', deleteLabelEntry);
 
+    // send data to watch
+    $('#btnSendData').on('click', sendDataToWatch);
+
     // capture all text entered into the input fields and make uppercase
     $('.form-input').on('input', function () {
         this.value = this.value.toUpperCase();
@@ -42,15 +52,49 @@ const initApplication = () => {
     window.ipcRender.receive('message:update', (message) => {
         if (message === 'communication-send-data') {
             // Send the data
-            sendData();
+            showSendDataDialog();
+        } else if (message === 'communication-set-port') {
+            // Set the port
+            setPort();
         }
     });
 }
 
+
+//
+// Open the dialog to confirm sending the data to the watch
+//
+const showSendDataDialog = () => {
+    // open the dialog
+    const dialog = document.querySelector('#dialog-send');
+    dialog.show();
+
+    // Add the close button listener, basically it adds the event listener to the first button
+    // which happens to be the close button
+    const closeButton = dialog.querySelector('sl-button[slot="footer"]');
+    closeButton.addEventListener('click', () => dialog.hide());
+};
+
+//
+// Send the data to the watch
+//
+const sendDataToWatch = (e) => {
+
+    e.preventDefault();
+
+    const dialog = document.querySelector('#dialog-send');
+    dialog.hide();
+
+    actions.sendDataToWatch();
+
+    // display a progress bar, to simulate the data transfer
+    sendDataProgress();
+};
+
 //
 // Data is being sent to the watch, update a progress bar
 //
-const sendData = () => {
+const sendDataProgress = () => {
     // Add progress indicator in the footer
     $('#footer').html('<sl-progress-bar value="0"></sl-progress-bar>');
     // Now update the progress bar every 100ms by 10 steps until 100 which is the max
@@ -70,6 +114,20 @@ const sendData = () => {
     }, 400);
 };
 
+//
+// Set the port
+//
+const setPort = () => {
+    // open the dialog
+    const dialog = document.querySelector('#dialog-port');
+    dialog.show();
+
+    $('#port-text').val(actions.getPort());
+
+    setTimeout(() => {
+        $('#port-text').focus();
+    }, 200);
+};
 
 //
 // Check if we have reached the maximum number of labels for each type

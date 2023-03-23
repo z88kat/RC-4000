@@ -224,10 +224,19 @@ Example is for 4 labels
 
 # Development
 
+Some notes on development.  The application works both on the command line and in electron. Electron is used to provide a GUI. It was a bit tricky to get both running in the same environment as electron is not working with all the packages I used in the command line version.  This is due to the fact that electron is unfriendly with ES6 modules.
+
 ## Electron
 
-keep it running with electronmon
+To keep the application running with electronmon and auto reload on changes run:
 
 ```
 npx electronmon index-electron.cjs
 ```
+
+The serialport package needs to be rebuilt for electron. Everytime you add a package run this:
+
+```
+npm run rebuild
+```
+

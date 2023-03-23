@@ -103,7 +103,12 @@ dist
 # TernJS port file
 .tern-port
 
+# configuration
+-config
+
+# my test file :-)
 saves/RCSAVE
 
+# yarn stuff
 yarn.lock
 package-lock.json

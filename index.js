@@ -23,7 +23,6 @@ import {
 import {
     watch
 } from "./lib/watch.mjs";
-
 import moment from 'moment';
 
 const VERSION = '1.0';

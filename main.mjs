@@ -104,7 +104,7 @@ const mainMenuTemplate = [{
             accelerator: process.platform == 'darwin' ? 'Command+P' : 'Ctrl+P',
             click() {
                 // Send the data
-                //  sendData();
+                setPort();
             }
         }, {
             label: 'Send Data',
@@ -149,4 +149,11 @@ const sendData = () => {
     //win.webContents.send('menu-event', 'communication-send-data');
     // Send a message to the window.
     win.webContents.send('message:update', 'communication-send-data');
+}
+
+const setPort = () => {
+    // Send a message to init the communication
+    //win.webContents.send('menu-event', 'communication-set-port');
+    // Send a message to the window.
+    win.webContents.send('message:update', 'communication-set-port');
 }

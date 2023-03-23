@@ -6,6 +6,9 @@
         <meta http-equiv="Content-Security-Policy" content="script-src 'self'" />
         <!-- jquery -->
         <script src="js/jquery-3.6.4.min.js"></script>
+        <!-- jquery validator -->
+        <script src="js/jquery.validate.js"></script>
+        <script src="js/additional-methods.js"></script>
         <!-- bootstrap -->
         <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
         <script src="js/bootstrap.bundle.js"></script>
@@ -104,6 +107,34 @@
             <sl-button slot="footer" variant="default" class="pr-2">Close</sl-button>
             <sl-button slot="footer" variant="primary" id="btnAddScheduledLabel">
                 <i class="fa-solid fa-plus"></i> Add
+            </sl-button>
+        </sl-dialog>
+
+        <!-- Set Port Dialog -->
+        <sl-dialog label="Set Port" class="dialog-overview" id="dialog-port">
+            <div class="row">
+                <div class="col ml-4">
+                    <form class="form-submission">
+                        <input required max="50" min="4" class="form-control form-input" id="port-text" type="text" />
+                    </form>
+                </div>
+            </div>
+            <sl-button slot="footer" variant="default" class="pr-2">Close</sl-button>
+            <sl-button slot="footer" variant="primary" id="btnSaveSerialPort">
+                <i class="fa-regular fa-paper-plane"></i> Send
+            </sl-button>
+        </sl-dialog>
+
+        <!-- Send Data to the watch-->
+        <sl-dialog label="Send Data to Watch" class="dialog-overview" id="dialog-send">
+            <div class="row">
+                <div class="col ml-4">
+                    Press the Terminal & Lock button on the watch and SEND to transmit the data.
+                </div>
+            </div>
+            <sl-button slot="footer" variant="default" class="pr-2">Close</sl-button>
+            <sl-button slot="footer" variant="primary" id="btnSendData">
+                SEND
             </sl-button>
         </sl-dialog>
 
