@@ -9,8 +9,6 @@ $(document).ready(function () {
     initApplication();
     // check the label status and disable buttons if needed
     checkLabelNumberStatus();
-    // enable global validation
-    $('.form-submission').validate();
 });
 
 //
@@ -39,6 +37,9 @@ const initApplication = () => {
 
     // send data to watch
     $('#btnSendData').on('click', sendDataToWatch);
+
+    // save the port
+    $('#btnSaveSerialPort').on('click', saveSerialPort);
 
     // capture all text entered into the input fields and make uppercase
     $('.form-input').on('input', function () {
@@ -92,6 +93,23 @@ const sendDataToWatch = (e) => {
 };
 
 //
+// Save the serial port
+//
+const saveSerialPort = (e) => {
+    e.preventDefault();
+
+    // grab the value from the input field
+    let val = $('#port-text').val().trim();
+
+    const dialog = document.querySelector('#dialog-port');
+    dialog.hide();
+
+    if (val.length > 3) {
+        actions.setPort(val);
+    }
+}
+
+//
 // Data is being sent to the watch, update a progress bar
 //
 const sendDataProgress = () => {
@@ -121,6 +139,8 @@ const setPort = () => {
     // open the dialog
     const dialog = document.querySelector('#dialog-port');
     dialog.show();
+    const closeButton = dialog.querySelector('sl-button[slot="footer"]');
+    closeButton.addEventListener('click', () => dialog.hide());
 
     $('#port-text').val(actions.getPort());
 

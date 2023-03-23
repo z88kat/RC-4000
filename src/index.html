@@ -114,14 +114,12 @@
         <sl-dialog label="Set Port" class="dialog-overview" id="dialog-port">
             <div class="row">
                 <div class="col ml-4">
-                    <form class="form-submission">
-                        <input required max="50" min="4" class="form-control form-input" id="port-text" type="text" />
-                    </form>
+                    <input required max="50" min="4" class="form-control" id="port-text" type="text" />
                 </div>
             </div>
             <sl-button slot="footer" variant="default" class="pr-2">Close</sl-button>
             <sl-button slot="footer" variant="primary" id="btnSaveSerialPort">
-                <i class="fa-regular fa-paper-plane"></i> Send
+                <i class="fa-regular fa-floppy-disk"></i> Save
             </sl-button>
         </sl-dialog>
 
@@ -134,7 +132,7 @@
             </div>
             <sl-button slot="footer" variant="default" class="pr-2">Close</sl-button>
             <sl-button slot="footer" variant="primary" id="btnSendData">
-                SEND
+                <i class="fa-regular fa-paper-plane"></i> SEND
             </sl-button>
         </sl-dialog>
 
