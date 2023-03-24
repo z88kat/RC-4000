@@ -12,6 +12,8 @@ const __dirname = path.dirname(__filename);
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const Menu = electron.Menu;
+const dialog = electron.dialog;
+const ipcMain = electron.ipcMain;
 
 // constant for development
 const isDev = process.env.NODE_ENV !== 'production';
@@ -62,8 +64,7 @@ const mainMenuTemplate = [{
             accelerator: process.platform == 'darwin' ? 'Command+L' : 'Ctrl+L',
             click() {
                 // Load the file
-                //  loadFile();
-
+                loadFile();
             }
         }, {
             label: 'Save',
@@ -131,6 +132,28 @@ app.whenReady().then(() => {
             createWindow();
         }
     });
+
+    //
+    // Handle the load file dialog, and load the file
+    //
+    ipcMain.on('load-file-dialog', () => {
+        dialog.showOpenDialog({
+            properties: ['openFile']
+        }).then((result) => {
+            // if not canceled, load the file
+            if (!result.canceled && result.filePaths[0]) {
+
+                // o man, I did not figure out this electron stuff yet,
+                // but if we try and get access to the watch singleton it will
+                // create a new instance, looks like this main.js file is a new process
+                // I really need to read the docs on this stuff
+                // so for now, we will just send a message to trigger the load in the correct thread
+                win.webContents.send('message:update', 'communication-file-loaded', result.filePaths[0]);
+
+            }
+        });
+    });
+
 });
 
 // Quit the application
@@ -142,6 +165,17 @@ app.on("window-all-closed", () => {
 
 
 //
+// Select and load a watch data file
+//
+const loadFile = () => {
+    // Send a message to init the communication
+    // and open the file dialog (take a look in renderer.js)
+    // also take a look in the preload.js file for what happens next
+    // once the file is selected
+    win.webContents.send('message:update', 'communication-load-file');
+}
+
+//
 // Send watch data to the watch
 //
 const sendData = () => {
@@ -151,6 +185,9 @@ const sendData = () => {
     win.webContents.send('message:update', 'communication-send-data');
 }
 
+//
+// Set the default serial port (and save it to the config file)
+//
 const setPort = () => {
     // Send a message to init the communication
     //win.webContents.send('menu-event', 'communication-set-port');

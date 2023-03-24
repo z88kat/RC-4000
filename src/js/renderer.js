@@ -2,7 +2,6 @@
  * Frontend application code
  */
 
-
 // jquery is ready
 $(document).ready(function () {
     // init the application
@@ -50,13 +49,25 @@ const initApplication = () => {
 
     // Listen for the menu navigation event send from the main process
     // Listen for message updates from the main thread.
-    window.ipcRender.receive('message:update', (message) => {
+    window.ipcRender.receive('message:update', (message, action) => {
         if (message === 'communication-send-data') {
             // Send the data
             showSendDataDialog();
         } else if (message === 'communication-set-port') {
             // Set the port
             setPort();
+        } else if (message === 'communication-load-file') {
+            // Load the file
+            files.openLoadDialog();
+        } else if (message === 'communication-file-loaded') {
+            // File is loaded, update the UI
+            //
+            // I need some kind of callback here once the file is loaded
+            // still need to figure this electron stuff better
+            actions.loadFile(action);
+            setTimeout(() => {
+                updateUIForLoadedFile();
+            }, 500);
         }
     });
 }
@@ -260,7 +271,7 @@ const addMemoLabelEntry = () => {
         id: memo.id,
         type: memo.type,
         category: 'L',
-        name: memo.label
+        label: memo.label
     });
 
     const dialog = document.querySelector('#dialog-memo');
@@ -286,7 +297,7 @@ const addWeeklyLabelEntry = () => {
         id: memo.id,
         type: memo.type,
         category: 'L',
-        name: memo.label
+        label: memo.label
     });
 
     const dialog = document.querySelector('#dialog-weekly');
@@ -312,7 +323,7 @@ const addScheduledLabelEntry = () => {
         id: memo.id,
         type: memo.type,
         category: 'L',
-        name: memo.label
+        label: memo.label
     });
 
     const dialog = document.querySelector('#dialog-scheduled');
@@ -322,8 +333,11 @@ const addScheduledLabelEntry = () => {
     checkLabelNumberStatus();
 };
 
-const addRowToTable = (data) => {
 
+//
+// Add a single row of data to the table (label or data)
+//
+const addRowToTable = (data) => {
     let html = tableRowHtml(data);
     $('#tableBody').append(html);
 };
@@ -338,7 +352,7 @@ const buildTable = (data) => {
 //
 const tableRowHtml = (data) => {
 
-    console.log(data)
+    //console.log(data)
 
     let icon = '';
     if (data.type === 2) icon = 'fa-regular fa-bell'; // weekly
@@ -351,7 +365,7 @@ const tableRowHtml = (data) => {
                 <i class="${icon}"></i>
             </td>
             <td>
-                ${data.name}
+                ${data.label}
             </td>
             <td style="width:20px" class="edit-entry">
                 <a href="#" class="add-data-entry" title="Add Data">
@@ -438,3 +452,29 @@ const deleteLabelEntry = (e) => {
     // check if we have reached the maximum number of labels
     checkLabelNumberStatus();
 }
+
+
+//
+// A file has been loaded into the main watch data
+// what we need to do now is read the data and populate the table
+// and adjust any of the buttons that need to be disabled
+//
+const updateUIForLoadedFile = () => {
+
+    // clear the table
+    $('#tableBody').empty();
+
+    // get the data from the watch
+    let data = watch.getLabels();
+
+    // populate the table
+    for (let i = 0; i < data.length; i++) {
+        let d = data[i];
+        console.log(d);
+        addRowToTable(d);
+    }
+
+    // check if we have reached the maximum number of labels
+    checkLabelNumberStatus();
+
+};
