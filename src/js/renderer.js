@@ -34,6 +34,9 @@ const initApplication = () => {
     // delete a label entry
     $(document).on('click', '.delete-entry', deleteLabelEntry);
 
+    // delete a data entry
+    $(document).on('click', '.delete-data', deleteDataEntry);
+
     // send data to watch
     $('#btnSendData').on('click', sendDataToWatch);
 
@@ -342,6 +345,14 @@ const addRowToTable = (data) => {
     $('#tableBody').append(html);
 };
 
+//
+// Add a single row of data to the table (label or data)
+//
+const addDataRowToTable = (data, index) => {
+    let html = tableDataRowHtml(data, index);
+    $('#tableBody').append(html);
+};
+
 const buildTable = (data) => {
 
 };
@@ -380,6 +391,39 @@ const tableRowHtml = (data) => {
             <td style="width:20px">
                 <a href="#" class="delete-entry" title="Delete Label">
                     <i class="fa-regular fa-trash-can"></i>
+                </a>
+            </td>
+        </tr>`;
+
+    return d;
+};
+
+
+//
+// Create a single table row entry for either a label or data entry
+//
+const tableDataRowHtml = (data, index) => {
+
+
+    let d = `
+        <tr data-index="${index}">
+            <td style="width:20px">
+                <!-- nothing -->
+            </td>
+            <td>
+                ${data}
+            </td>
+            <td style="width:20px" class="edit-entry">
+                <!-- Nothing -->
+            </td>
+            <td style="width:20px" class="edit-entry" title="Edit Data">
+                <a href="#" class="edit-data">
+                    <i class="fa-solid fa-pencil"></i>
+                </a>
+            </td>
+            <td style="width:20px">
+                <a href="#" class="delete-data" title="Delete Data">
+                    <i class="fa-solid fa-xmark"></i>
                 </a>
             </td>
         </tr>`;
@@ -455,6 +499,34 @@ const deleteLabelEntry = (e) => {
 
 
 //
+// Delete a single data entry
+//
+const deleteDataEntry = (e) => {
+
+    e.preventDefault();
+
+    let row = $(e.target).closest('tr');
+    let index = row.data('index'); // index 0 is possible so be careful of boolean checks
+
+    // Look back at the preview rows until we find the label row
+    let labelRow = row.prevUntil('tr[data-category="L"]').last();
+    // Get the id of the label
+    let id = labelRow.data('id');
+    console.log(id, index);
+    if (!id) return;
+
+    // delete the label from the watch
+    //    actions.deleteDataEntry(id, index);
+
+    // remove the row from the table
+    row.remove();
+
+
+    // check if we have reached the maximum number of labels
+    checkLabelNumberStatus();
+}
+
+//
 // A file has been loaded into the main watch data
 // what we need to do now is read the data and populate the table
 // and adjust any of the buttons that need to be disabled
@@ -472,6 +544,10 @@ const updateUIForLoadedFile = () => {
         let d = data[i];
         console.log(d);
         addRowToTable(d);
+        // Loop over any data entries and add them to the table
+        d.store.forEach((item, index) => {
+            addDataRowToTable(item, index);
+        });
     }
 
     // check if we have reached the maximum number of labels

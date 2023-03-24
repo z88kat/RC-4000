@@ -73,6 +73,15 @@ const mainMenuTemplate = [{
                 // Save the file
                 //  saveFile();
             }
+        }, , {
+            label: 'Save As...',
+            accelerator: process.platform == 'darwin' ? 'Command+S' : 'Ctrl+S',
+            click() {
+                // Save the file under a new name
+                //  saveFile();
+            }
+        }, {
+            type: 'separator'
         }, {
             label: 'Quit',
             accelerator: process.platform == 'darwin' ? 'Command+Q' : 'Ctrl+Q',
@@ -84,19 +93,21 @@ const mainMenuTemplate = [{
     {
         label: 'View',
         submenu: [{
-            label: 'Toggle DevTools',
-            accelerator: process.platform == 'darwin' ? 'Command+I' : 'Ctrl+I',
-            click(item, focusedWindow) {
-                focusedWindow.toggleDevTools();
-            },
-        }, {
-            label: 'About',
-            accelerator: process.platform == 'darwin' ? 'Command+A' : 'Ctrl+A',
-            click() {
-                // Show the about dialog
-                aboutDialog();
+                label: 'Toggle DevTools',
+                accelerator: process.platform == 'darwin' ? 'Command+I' : 'Ctrl+I',
+                click(item, focusedWindow) {
+                    focusedWindow.toggleDevTools();
+                },
             }
-        }]
+            /*{
+                label: 'About',
+                accelerator: process.platform == 'darwin' ? 'Command+A' : 'Ctrl+A',
+                click() {
+                    // Show the about dialog
+                    aboutDialog();
+                }
+            }*/
+        ]
     },
     {
         label: 'Communications',
