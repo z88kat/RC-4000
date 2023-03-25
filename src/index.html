@@ -70,7 +70,7 @@
         </div>
 
         <!-- Add / Edit a memo label -->
-        <sl-dialog label="Memo Label" class="dialog-overview" id="dialog-memo">
+        <sl-dialog label="Memo Label" class="dialog-label dialog-overview" id="dialog-memo" data-action="add">
             <div class="row">
                 <div class="col ml-4">
                     <textarea required min="1" max="24" maxlength="24" class="form-control form-input" id="memo-text"
@@ -83,7 +83,7 @@
         </sl-dialog>
 
         <!-- Add / Edit a weekly label -->
-        <sl-dialog label="Weekly Label" class="dialog-overview" id="dialog-weekly">
+        <sl-dialog label="Weekly Label" class="dialog-label dialog-overview" id="dialog-weekly" data-action="add">
             <div class="row">
                 <div class="col ml-4">
                     <textarea required min="1" max="24" maxlength="24" class="form-control form-input" id="weekly-text"
@@ -97,7 +97,7 @@
         </sl-dialog>
 
         <!-- Add / Edit a scheduled label -->
-        <sl-dialog label="Scheduled Label" class="dialog-overview" id="dialog-scheduled">
+        <sl-dialog label="Scheduled Label" class="dialog-label dialog-overview" id="dialog-scheduled" data-action="add">
             <div class="row">
                 <div class="col ml-4">
                     <textarea required min="1" max="24" maxlength="24" class="form-control form-input"

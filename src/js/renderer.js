@@ -30,7 +30,6 @@ const initApplication = () => {
 
     // edit a label entry
     $(document).on('click', '.edit-entry', editLabelEntry);
-
     // delete a label entry
     $(document).on('click', '.delete-entry', deleteLabelEntry);
 
@@ -199,6 +198,9 @@ const checkLabelNumberStatus = () => {
 // Add a weekly label
 //
 const addWeelkyLabel = () => {
+
+    $('#dialog-weekly').data('action', 'add');
+
     // open the dialog
     const dialog = document.querySelector('#dialog-weekly');
     dialog.show();
@@ -220,6 +222,9 @@ const addWeelkyLabel = () => {
 // Add a new scheduled label
 //
 const addScheduledLabel = () => {
+
+    $('#dialog-scheduled').data('action', 'add');
+
     // open the dialog
     const dialog = document.querySelector('#dialog-scheduled');
     dialog.show()
@@ -241,6 +246,9 @@ const addScheduledLabel = () => {
 // Add a new memo Label
 //
 const addMemoLabel = () => {
+
+    // we are adding, not editing
+    $('#dialog-scheduled').data('action', 'add');
 
     // open the dialog
     const dialog = document.querySelector('#dialog-memo');
@@ -268,15 +276,29 @@ const addMemoLabelEntry = () => {
     if (!name) return;
     if (name.length < 1) return;
 
-    // Add a new memo label
-    let memo = actions.addMemoLabel(name);
-    // insert the new label into the table
-    addRowToTable({
-        id: memo.id,
-        type: memo.type,
-        category: 'L',
-        label: memo.label
-    });
+    const action = $('#dialog-memo').closest('.dialog-label').data('action');
+
+    if (action === 'edit') {
+        // we are editing an existing label
+        let id = $('#dialog-memo').closest('.dialog-label').data('id');;
+        actions.updateLabelEntry(id, name);
+
+        // find and update the table row using the id and the category L
+        let row = $('#tableBody tr[data-id="' + id + '"][data-category="L"]');
+        console.log(row)
+        row.find('td:nth-child(2)').html(name);
+
+    } else {
+        // Add a new memo label
+        let memo = actions.addMemoLabel(name);
+        // insert the new label into the table
+        addRowToTable({
+            id: memo.id,
+            type: memo.type,
+            category: 'L',
+            label: memo.label
+        });
+    }
 
     const dialog = document.querySelector('#dialog-memo');
     dialog.hide();
@@ -373,7 +395,7 @@ const tableRowHtml = (data) => {
 
     // delete is disabled if they contain at least one data entry
     let deleteDisabled = '';
-    if (data.store.length > 0) deleteDisabled = 'disabled';
+    if (data.store && data.store.length > 0) deleteDisabled = 'disabled';
 
     let d = `
         <tr data-type="${data.type}" data-id="${data.id}" data-category="${data.category}">
@@ -448,15 +470,19 @@ const editLabelEntry = (e) => {
     let id = row.data('id');
     let type = row.data('type');
 
-    if (!id) return;
+    if (!id) return; // hmmmm?
 
     // open the dialog
     let dialog = null;
     if (type === 0) dialog = document.querySelector('#dialog-memo');
     if (type === 1) dialog = document.querySelector('#dialog-scheduled');
     if (type === 2) dialog = document.querySelector('#dialog-weekly');
-
     dialog.show();
+
+    // store the action and label id in the dialog so we know what to update
+    if (type === 0) $('#dialog-memo').data('action', 'edit').data('id', id);
+    if (type === 1) $('#dialog-scheduled').data('action', 'edit').data('id', id);
+    if (type === 2) $('#dialog-weekly').data('action', 'edit').data('id', id);
 
     let name = row.find('td:nth-child(2)').text().trim();
     // Find the text area in the dialog and populate it with the label name
