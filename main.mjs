@@ -69,6 +69,7 @@ const mainMenuTemplate = [{
         }, {
             label: 'Save',
             accelerator: process.platform == 'darwin' ? 'Command+S' : 'Ctrl+S',
+            enabled: false,
             click() {
                 // Save the file
                 //  saveFile();
@@ -78,7 +79,7 @@ const mainMenuTemplate = [{
             accelerator: process.platform == 'darwin' ? 'Command+S' : 'Ctrl+S',
             click() {
                 // Save the file under a new name
-                //  saveFile();
+                //  saveFileAs();
             }
         }, {
             type: 'separator'
@@ -88,6 +89,38 @@ const mainMenuTemplate = [{
             click() {
                 app.quit();
             }
+        }]
+    },
+    // Add the default edit role menu items
+    {
+
+        label: 'Edit',
+        submenu: [{
+            label: 'Undo',
+            accelerator: process.platform == 'darwin' ? 'Command+Z' : 'Ctrl+Z',
+            role: 'undo'
+        }, {
+            label: 'Redo',
+            accelerator: process.platform == 'darwin' ? 'Command+Y' : 'Ctrl+Y',
+            role: 'redo'
+        }, {
+            type: 'separator'
+        }, {
+            label: 'Cut',
+            accelerator: process.platform == 'darwin' ? 'Command+X' : 'Ctrl+X',
+            role: 'cut'
+        }, {
+            label: 'Copy',
+            accelerator: process.platform == 'darwin' ? 'Command+C' : 'Ctrl+C',
+            role: 'copy'
+        }, {
+            label: 'Paste',
+            accelerator: process.platform == 'darwin' ? 'Command+V' : 'Ctrl+V',
+            role: 'paste'
+        }, {
+            label: 'Select All',
+            accelerator: process.platform == 'darwin' ? 'Command+A' : 'Ctrl+A',
+            role: 'selectAll'
         }]
     },
     {
