@@ -24,6 +24,17 @@ input {
     font-family: Courier;
 }
 
+/** fix font */
+.terminal {
+    font-family: Courier;
+    overflow: auto;
+}
+
+.label {
+    font-family: Courier;
+    color: cornflowerblue;
+}
+
 /** mouse over a link make it orange */
 a:hover {
     color: orange;
@@ -33,6 +44,16 @@ a:hover {
 a {
     color: purple;
 }
+
+/** disable hyperlinks with this class */
+.disabled {
+    pointer-events: none;
+    cursor: default;
+    text-decoration: none;
+    color: grey;
+}
+
+
 
 footer {
     background-color: darkgrey;

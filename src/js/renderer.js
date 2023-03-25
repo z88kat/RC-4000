@@ -166,6 +166,7 @@ const setPort = () => {
 //
 // Check if we have reached the maximum number of labels for each type
 //
+//
 const checkLabelNumberStatus = () => {
 
     // update the number of labels remaining
@@ -348,8 +349,8 @@ const addRowToTable = (data) => {
 //
 // Add a single row of data to the table (label or data)
 //
-const addDataRowToTable = (data, index) => {
-    let html = tableDataRowHtml(data, index);
+const addDataRowToTable = (data, id, index) => {
+    let html = tableDataRowHtml(data, id, index);
     $('#tableBody').append(html);
 };
 
@@ -370,12 +371,16 @@ const tableRowHtml = (data) => {
     if (data.type === 1) icon = 'fa-regular fa-calendar-days'; // scheduled
     if (data.type === 0) icon = 'fa-solid fa-tag'; // memo
 
+    // delete is disabled if they contain at least one data entry
+    let deleteDisabled = '';
+    if (data.store.length > 0) deleteDisabled = 'disabled';
+
     let d = `
         <tr data-type="${data.type}" data-id="${data.id}" data-category="${data.category}">
             <td style="width:20px">
                 <i class="${icon}"></i>
             </td>
-            <td>
+            <td class="label">
                 ${data.label}
             </td>
             <td style="width:20px" class="edit-entry">
@@ -389,7 +394,7 @@ const tableRowHtml = (data) => {
                 </a>
             </td>
             <td style="width:20px">
-                <a href="#" class="delete-entry" title="Delete Label">
+                <a href="#" class="delete-entry ${deleteDisabled}" title="Delete Label">
                     <i class="fa-regular fa-trash-can"></i>
                 </a>
             </td>
@@ -402,15 +407,15 @@ const tableRowHtml = (data) => {
 //
 // Create a single table row entry for either a label or data entry
 //
-const tableDataRowHtml = (data, index) => {
+const tableDataRowHtml = (data, id, index) => {
 
 
     let d = `
-        <tr data-index="${index}">
+        <tr data-index="${index}" data-id="${id}" data-category"d">
             <td style="width:20px">
                 <!-- nothing -->
             </td>
-            <td>
+            <td class="terminal">
                 ${data}
             </td>
             <td style="width:20px" class="edit-entry">
@@ -507,13 +512,11 @@ const deleteDataEntry = (e) => {
 
     let row = $(e.target).closest('tr');
     let index = row.data('index'); // index 0 is possible so be careful of boolean checks
+    let id = row.data('id'); // this is the label id
+    if (!id) return;
 
     // Look back at the preview rows until we find the label row
     let labelRow = row.prevUntil('tr[data-category="L"]').last();
-    // Get the id of the label
-    let id = labelRow.data('id');
-    console.log(id, index);
-    if (!id) return;
 
     // delete the label from the watch
     //    actions.deleteDataEntry(id, index);
@@ -521,6 +524,12 @@ const deleteDataEntry = (e) => {
     // remove the row from the table
     row.remove();
 
+    // check if there are any data entries left in the table, category = d, id = §id
+    let dataRows = $(`tr[data-category="d"][data-id="${id}"]`);
+    if (dataRows.length === 0) {
+        // no data rows left so we need to enable the delete button
+        labelRow.find('.delete-entry').removeClass('disabled');
+    }
 
     // check if we have reached the maximum number of labels
     checkLabelNumberStatus();
@@ -546,7 +555,7 @@ const updateUIForLoadedFile = () => {
         addRowToTable(d);
         // Loop over any data entries and add them to the table
         d.store.forEach((item, index) => {
-            addDataRowToTable(item, index);
+            addDataRowToTable(item, d.id, index);
         });
     }
 
