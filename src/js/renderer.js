@@ -29,16 +29,18 @@ const initApplication = () => {
     $('#btnAddWeeklyLabel').click(addWeeklyLabelEntry);
 
     // edit a label entry
-    $(document).on('click', '.edit-entry', editLabelEntry);
+    $(document).on('click', '.edit-label-entry', editLabelEntry);
     // delete a label entry
     $(document).on('click', '.delete-entry', deleteLabelEntry);
 
     // add a new data entry, show the dialog
     $(document).on('click', '.add-data-entry', addDataEntryDialog);
+    // Click on the Add / Update button of the memo data dialog to save the entry
     $('#btnAddMemoData').click(addMemoDataEntry);
-
-    // delete a data entry
+    // delete a data entry, just remove it
     $(document).on('click', '.delete-data', deleteDataEntry);
+    // edit a data entry, show the dialog
+    $(document).on('click', '.edit-data-entry', editDataEntryDialog);
 
     // send data to watch
     $('#btnSendData').on('click', sendDataToWatch);
@@ -50,7 +52,7 @@ const initApplication = () => {
     $('.form-input').on('input', function () {
         this.value = this.value.toUpperCase();
         // only characters in the ascii range 32 to 128 are allowed
-        this.value = this.value.replace(/[^A-Z0-9;.,-/#/*+]/g, '');
+        this.value = this.value.replace(/[^A-Z0-9 ;.,-/#/*+]/g, '');
     });
 
     // Listen for the menu navigation event send from the main process
@@ -433,7 +435,7 @@ const addScheduledLabelEntry = () => {
 // Add a single row of data to the table (label or data)
 //
 const addRowToTable = (data) => {
-    let html = tableRowHtml(data);
+    let html = tableLabelRowHtml(data);
     $('#tableBody').append(html);
 };
 
@@ -451,9 +453,9 @@ const buildTable = (data) => {
 
 
 //
-// Create a single table row entry for either a label or data entry
+// Create a single table row entry for a label
 //
-const tableRowHtml = (data) => {
+const tableLabelRowHtml = (data) => {
 
     //console.log(data)
 
@@ -480,7 +482,7 @@ const tableRowHtml = (data) => {
                 </a>
             </td>
             <td style="width:20px" title="Edit Label">
-                <a href="#" class="edit-entry">
+                <a href="#" class="edit-label-entry">
                     <i class="fa-regular fa-pen-to-square"></i>
                 </a>
             </td>
@@ -502,7 +504,7 @@ const tableDataRowHtml = (data, id, index) => {
 
 
     let d = `
-        <tr data-index="${index}" data-id="${id}" data-category"d">
+        <tr data-index="${index}" data-id="${id}" data-category="d">
             <td style="width:20px">
                 <!-- nothing -->
             </td>
@@ -513,7 +515,7 @@ const tableDataRowHtml = (data, id, index) => {
                 <!-- Nothing -->
             </td>
             <td style="width:20px" class="edit-entry" title="Edit Data">
-                <a href="#" class="edit-data">
+                <a href="#" class="edit-data-entry">
                     <i class="fa-solid fa-pencil"></i>
                 </a>
             </td>
@@ -599,7 +601,7 @@ const deleteLabelEntry = (e) => {
 
 
 //
-// Add a new data entry to the selected label
+// Add a new data entry for the selected label
 //
 const addDataEntryDialog = (e) => {
     e.preventDefault();
@@ -617,6 +619,7 @@ const addDataEntryDialog = (e) => {
     if (type === 0) dialog = document.querySelector('#dialog-memo-data');
     if (type === 1) dialog = document.querySelector('#dialog-scheduled-data');
     if (type === 2) dialog = document.querySelector('#dialog-weekly-data');
+
     dialog.show();
 
     // clear the text area
@@ -650,31 +653,106 @@ const addMemoDataEntry = (e) => {
     if (!name) return;
     if (name.length < 1) return;
 
-    // Get the id of the label we are adding the data to
-    let id = $('#dialog-memo-data').data('label-id');
-    if (!id) return;
+    // Get the action
+    let action = $('#dialog-memo-data').data('action');
+
+    if (action === 'edit') {
+        // update the data entry
+        // Get the id and the index of the data entry
+        let id = $('#dialog-memo-data').data('id');
+        let index = $('#dialog-memo-data').data('index');
+        // find the row with the id and index and category = 'd'
+        let row = $(`tr[data-id="${id}"][data-index="${index}"][data-category="d"]`);
+        console.log('id', id, 'index', index, 'row', row);
+        // update the text
+        row.find('td:nth-child(2)').text(name);
+        actions.updateDataEntry(id, index, name);
+
+    } else {
+
+        // Get the id of the label we are adding the data to
+        let id = $('#dialog-memo-data').data('label-id');
+        if (!id) return;
+
+        // Add a new memo data
+        let index = actions.addMemoData(id, name);
+        // Add the row
+        let html = tableDataRowHtml(name, id, index);
+
+        // find the row with the id and append the new row after it
+        let row = $(`tr[data-id="${id}"]`).last();
+        row.after(html);
+
+        // Scroll to the new row
+        setTimeout(() => {
+            let newrow = $(`tr[data-id="${id}"][data-index="${index}"]`).prevAll().length; // Find all sibling element in front of it
+            $("#table-scroller").animate({
+                scrollTop: newrow * 30
+            });
+        }, 200);
+    }
 
     const dialog = document.querySelector('#dialog-memo-data');
     dialog.hide();
 
-    // Add a new memo data
-    let index = actions.addMemoData(id, name);
-    // Add the row
-    let html = tableDataRowHtml(name, id, index);
+};
 
-    // find the row with the id and append the new row after it
-    let row = $(`tr[data-id="${id}"]`).last();
-    row.after(html);
 
-    // Scroll to the new row
+
+//
+// Edit an existing data entry
+//
+const editDataEntryDialog = (e) => {
+    e.preventDefault();
+
+    let row = $(e.target).closest('tr');
+    // get the label id
+    let id = row.data('id');
+    // get the index
+    let index = row.data('index');
+
+    // Go back through the table and find the row with the category L
+    let type = $(row).prevAll().filter(function () {
+        return $(this).data('category') === 'L';
+    }).data('type');
+
+
+    if (!id) return; // hmmmm?
+
+    // show the add data dialog
+    let dialog = null;
+    if (type === 0) dialog = document.querySelector('#dialog-memo-data');
+    if (type === 1) dialog = document.querySelector('#dialog-scheduled-data');
+    if (type === 2) dialog = document.querySelector('#dialog-weekly-data');
+    dialog.show();
+
+    // Get the select data label and insert it into the text area
+    let name = row.find('td:nth-child(2)').text().trim();
+    $(dialog).find('textarea').val(name);
+
+    // Add the data id
+    // store the action and label id in the dialog so we know what to update
+    if (type === 0) $('#dialog-memo-data').data('id', id).data('action', 'edit').data('label-id', id).data('index', index);
+    if (type === 1) $('#dialog-scheduled-data').data('action', 'edit').data('label-id', id).data('index', index);
+    if (type === 2) $('#dialog-weekly-data').data('action', 'edit').data('label-id', id).data('index', index);
+
+
+    // Modify the dialog button from Add to Update
+    let button = dialog.querySelector('sl-button[slot="footer"][variant="primary"]');
+    button.innerHTML = '<i class="fa-solid fa-file-pen"></i> Update';
+
+
+    // set the focus to the text area
     setTimeout(() => {
-        let newrow = $(`tr[data-id="${id}"][data-index="${index}"]`).prevAll().length; // Find all sibling element in front of it
-        $("#table-scroller").animate({
-            scrollTop: newrow * 30
-        });
+        // just find the text area and set the focus
+        $(dialog).find('textarea').focus();
     }, 200);
 
+    // add the close button action to the dialog
+    const closeButton = dialog.querySelector('sl-button[slot="footer"]');
+    closeButton.addEventListener('click', () => dialog.hide());
 };
+
 
 //
 // Delete a single data entry

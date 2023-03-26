@@ -21,6 +21,9 @@
         <!-- toastify-->
         <link rel="stylesheet" href="css/toastify.min.css" type="text/css" />
         <script src="js/toastify-js.min.js"></script>
+        <!-- Date Picker-->
+        <link rel="stylesheet" type="text/css" href="css/flatpickr.min.css" />
+        <script src="js/flatpackr/flatpickr.min.js"></script>
 
         <!-- custom -->
         <link rel="stylesheet" href="css/style.css" />
@@ -142,7 +145,8 @@
         </sl-dialog>
 
         <!-- Add / Edit memo data -->
-        <sl-dialog label="Memo Data" class="dialog-data dialog-overview" id="dialog-memo-data" data-action="add">
+        <sl-dialog label="Memo Data" class="dialog-data dialog-overview" id="dialog-memo-data" data-action="add"
+            data-category="d" data-index="0" data-type="0">
             <div class="row">
                 <div class="col ml-4">
                     <textarea required min="1" max="24" maxlength="24" class="form-control form-input"

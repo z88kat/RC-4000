@@ -30,6 +30,7 @@
     "electron": "^23.1.4",
     "electron-rebuild": "^3.2.9",
     "esm": "^3.2.25",
+    "flatpickr": "^4.6.13",
     "fs-extra": "^11.1.0",
     "moment": "^2.29.4",
     "prompts": "^2.4.2",
