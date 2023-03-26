@@ -766,9 +766,6 @@ const deleteDataEntry = (e) => {
     let id = row.data('id'); // this is the label id
     if (!id) return;
 
-    // Look back at the preview rows until we find the label row
-    let labelRow = row.prevUntil('tr[data-category="L"]').last();
-
     // delete the label from the watch
     actions.deleteDataEntry(id, index);
 
@@ -786,6 +783,8 @@ const deleteDataEntry = (e) => {
     // check if there are any data entries left in the table, category = d, id = §id
     dataRows = $(`tr[data-category="d"][data-id="${id}"]`);
     if (dataRows.length === 0) {
+        // Look back at the preview rows until we find the label row
+        let labelRow = $(`tr[data-category="L"][data-id="${id}"]`);
         // no data rows left so we need to enable the delete button
         labelRow.find('.delete-entry').removeClass('disabled');
     }
