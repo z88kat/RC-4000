@@ -15,6 +15,16 @@ $(document).ready(function () {
         singleSelect: true
     });
 
+    // time picker for the weekly alarm
+    // https://flatpickr.js.org/examples/
+    flatpickr('#weekly-time', {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "h:i K",
+        time_24hr: false,
+        minuteIncrement: 1
+    });
+
 });
 
 //
