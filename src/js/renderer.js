@@ -73,6 +73,7 @@ const initApplication = () => {
         } else if (message === 'communication-save-current-file') {
             // Save the file
             let result = actions.saveCurrentFile();
+            console.log(result);
             if (!result.success) {
                 showError(result.message);
             } else {
@@ -105,6 +106,10 @@ const initApplication = () => {
 // https://github.com/apvarun/toastify-js
 //
 const showError = (message) => {
+
+    if (!message) return;
+    if (message == '') return;
+
     Toastify({
         text: message,
         duration: 3000,
@@ -649,6 +654,9 @@ const addMemoDataEntry = (e) => {
     let id = $('#dialog-memo-data').data('label-id');
     if (!id) return;
 
+    const dialog = document.querySelector('#dialog-memo-data');
+    dialog.hide();
+
     // Add a new memo data
     let index = actions.addMemoData(id, name);
     // Add the row
@@ -658,8 +666,13 @@ const addMemoDataEntry = (e) => {
     let row = $(`tr[data-id="${id}"]`).last();
     row.after(html);
 
-    const dialog = document.querySelector('#dialog-memo-data');
-    dialog.hide();
+    // Scroll to the new row
+    setTimeout(() => {
+        let newrow = $(`tr[data-id="${id}"][data-index="${index}"]`).prevAll().length; // Find all sibling element in front of it
+        $("#table-scroller").animate({
+            scrollTop: newrow * 30
+        });
+    }, 200);
 
 };
 
@@ -679,13 +692,21 @@ const deleteDataEntry = (e) => {
     let labelRow = row.prevUntil('tr[data-category="L"]').last();
 
     // delete the label from the watch
-    //    actions.deleteDataEntry(id, index);
+    actions.deleteDataEntry(id, index);
 
     // remove the row from the table
     row.remove();
 
-    // check if there are any data entries left in the table, category = d, id = §id
+    // This is a bit clunky due to how I did the initial data store, we need to
+    // re-index the data entries after we delete one
     let dataRows = $(`tr[data-category="d"][data-id="${id}"]`);
+    for (let i = 0; i < dataRows.length; i++) {
+        let dataRow = $(dataRows[i]);
+        dataRow.data('index', i);
+    }
+
+    // check if there are any data entries left in the table, category = d, id = §id
+    dataRows = $(`tr[data-category="d"][data-id="${id}"]`);
     if (dataRows.length === 0) {
         // no data rows left so we need to enable the delete button
         labelRow.find('.delete-entry').removeClass('disabled');
