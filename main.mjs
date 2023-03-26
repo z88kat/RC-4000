@@ -16,6 +16,9 @@ const dialog = electron.dialog;
 const ipcMain = electron.ipcMain;
 const Notification = electron.Notification;
 
+const NOTIFICATION_TITLE = 'Seiko Watch'
+
+
 // constant for development
 const isDev = process.env.NODE_ENV !== 'production';
 
@@ -80,14 +83,7 @@ const mainMenuTemplate = [{
             accelerator: process.platform == 'darwin' ? 'Command+S' : 'Ctrl+S',
             click() {
                 // Save the file under a new name
-                //  saveFileAs();
-
-                const NOTIFICATION_TITLE = 'Basic Notification'
-                const NOTIFICATION_BODY = 'Notification from the Main process'
-                new Notification({
-                    title: NOTIFICATION_TITLE,
-                    body: NOTIFICATION_BODY
-                }).show();
+                saveFileAs();
             }
         }, {
             type: 'separator'
@@ -165,6 +161,11 @@ const mainMenuTemplate = [{
             click() {
                 // Send the data
                 sendData();
+                new Notification({
+                    title: NOTIFICATION_TITLE,
+                    body: 'Data sent'
+                }).show();
+
             }
         }]
     }
@@ -202,6 +203,43 @@ app.whenReady().then(() => {
                 // so for now, we will just send a message to trigger the load in the correct thread
                 win.webContents.send('message:update', 'communication-file-loaded', result.filePaths[0]);
 
+                // Get the filename as the last part of the path
+                let filename = result.filePaths[0].split('\\').pop().split('/').pop();
+
+                new Notification({
+                    title: NOTIFICATION_TITLE,
+                    body: 'File load from ' + filename,
+                }).show();
+
+            }
+        });
+    });
+
+    //
+    // Handle the save file dialog, and save the file
+    //
+    ipcMain.on('save-file-dialog', () => {
+        dialog.showSaveDialog({
+            title: 'Save Watch Data File',
+            buttonLabel: 'Save',
+            properties: ['createDirectory', 'treatPackageAsDirectory', 'showOverwriteConfirmation', 'dontAddToRecent'],
+        }).then((result) => {
+            // if not canceled, load the file
+            if (!result.canceled && result.filePath) {
+
+                // o man, if we try and get access to the watch singleton it will
+                // create a new instance, looks like this main.js file is a new process
+                // so for now, we will just send a message to trigger the save in the correct process
+                win.webContents.send('message:update', 'communication-file-saved', result.filePath);
+
+                // Get the filename as the last part of the path
+                let filename = result.filePath.split('\\').pop().split('/').pop();
+
+                new Notification({
+                    title: NOTIFICATION_TITLE,
+                    body: 'File saved as ' + filename,
+                }).show();
+
             }
         });
     });
@@ -225,6 +263,17 @@ const loadFile = () => {
     // also take a look in the preload.js file for what happens next
     // once the file is selected
     win.webContents.send('message:update', 'communication-load-file');
+}
+
+//
+// Select and save a watch data file
+//
+const saveFileAs = () => {
+    // Send a message to init the communication
+    // and open the file dialog (take a look in renderer.js)
+    // also take a look in the preload.js file for what happens next
+    // once the file is selected
+    win.webContents.send('message:update', 'communication-save-file');
 }
 
 //

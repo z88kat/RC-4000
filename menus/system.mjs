@@ -3,7 +3,7 @@
  */
 import prompts from "prompts";
 import fs from "fs-extra";
-import chalk from "chalk";
+import "colors";
 import {
     watch
 } from "../lib/watch.mjs";
@@ -22,7 +22,7 @@ const systemMenu = async function () {
     // Display the current filename if there is one
     let filename = watch.getFilename();
     if (filename != '') {
-        console.log(chalk.green(`Name File: ${filename}`));
+        console.log(`Name File: ${filename}`.green);
     }
 
     // Display the menu for saving and loading data until quit is selected
@@ -83,7 +83,7 @@ const loadFile = async function () {
         // store the filename for when we save
         let filename = watch.setFilename(response.filename);
     } else {
-        console.log(chalk.redBright('File does not exist'));
+        console.log('File does not exist'.redBright);
         return false;
     }
 
@@ -114,7 +114,7 @@ const saveFile = async function () {
     // if the filename is blank, just return and do nothing
     // also must be of type string
     if (response.filename == '' || typeof response.filename != 'string') {
-        console.log(chalk.redBright('No filename entered. No file saved'));
+        console.log('No filename entered. No file saved'.redBright);
         return false;
     }
 
@@ -125,13 +125,13 @@ const saveFile = async function () {
 
         // finally we are done
         fs.writeFileSync(response.filename, filedata, 'utf8');
-        console.log(chalk.greenBright('File saved'));
+        console.log('File saved'.greenBright);
 
         // If we get here then we have saved the file
         watch.setFilename(response.filename);
     } catch (err) {
         console.error(err);
-        console.log(chalk.redBright('Error saving file'));
+        console.log('Error saving file'.redBright);
     }
 
 };

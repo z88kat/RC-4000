@@ -65,6 +65,10 @@ const initApplication = () => {
         } else if (message === 'communication-load-file') {
             // Load the file
             files.openLoadDialog();
+
+        } else if (message === 'communication-save-file') {
+            // Save the file
+            files.openSaveDialog();
         } else if (message === 'communication-file-loaded') {
             // File is loaded, update the UI
             //
@@ -74,9 +78,37 @@ const initApplication = () => {
             setTimeout(() => {
                 updateUIForLoadedFile();
             }, 500);
+        } else if (message === 'communication-file-saved') {
+            // File is saved, nothing else to do really
+            //
+            let result = actions.saveFile(action);
+            if (!result.success) {
+                console.error(result.message);
+            }
         }
     });
 }
+
+//
+// Show an error message
+// https://github.com/apvarun/toastify-js
+//
+const showError = (message) => {
+    Toastify({
+        text: message,
+        duration: 3000,
+        newWindow: true,
+        close: true,
+        gravity: "top", // `top` or `bottom`
+        position: "left", // `left`, `center` or `right`
+        stopOnFocus: true, // Prevents dismissing of toast on hover
+        style: {
+            //background: "linear-gradient(to right, #00b09b, #96c93d)",
+            color: "red"
+        },
+        onClick: function () {} // Callback after click
+    }).showToast();
+};
 
 
 //
