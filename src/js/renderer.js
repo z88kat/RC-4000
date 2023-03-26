@@ -69,6 +69,16 @@ const initApplication = () => {
         } else if (message === 'communication-save-file') {
             // Save the file
             files.openSaveDialog();
+
+        } else if (message === 'communication-save-current-file') {
+            // Save the file
+            let result = actions.saveCurrentFile();
+            if (!result.success) {
+                showError(result.message);
+            } else {
+                showToast('File saved');
+            }
+
         } else if (message === 'communication-file-loaded') {
             // File is loaded, update the UI
             //
@@ -78,12 +88,13 @@ const initApplication = () => {
             setTimeout(() => {
                 updateUIForLoadedFile();
             }, 500);
+
         } else if (message === 'communication-file-saved') {
             // File is saved, nothing else to do really
             //
             let result = actions.saveFile(action);
             if (!result.success) {
-                console.error(result.message);
+                showError(result.message);
             }
         }
     });
@@ -109,6 +120,23 @@ const showError = (message) => {
         onClick: function () {} // Callback after click
     }).showToast();
 };
+
+
+//
+// Show a single toast message
+//
+const showToast = (message) => {
+    Toastify({
+        text: message,
+        duration: 3000,
+        newWindow: true,
+        close: true,
+        gravity: "top", // `top` or `bottom`
+        position: "left", // `left`, `center` or `right`
+        stopOnFocus: true, // Prevents dismissing of toast on hover
+        onClick: function () {} // Callback after click
+    }).showToast();
+}
 
 
 //

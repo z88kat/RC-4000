@@ -69,14 +69,17 @@ const mainMenuTemplate = [{
             click() {
                 // Load the file
                 loadFile();
+                // TODO: we need to move this to an event handler else we never know if the load failed
+                Menu.getApplicationMenu().getMenuItemById('menu-save').enabled = true;
             }
         }, {
+            id: 'menu-save',
             label: 'Save',
             accelerator: process.platform == 'darwin' ? 'Command+S' : 'Ctrl+S',
-            enabled: false,
+            enabled: false, // disable until we load or save as as file
             click() {
                 // Save the file
-                //  saveFile();
+                saveFile();
             }
         }, , {
             label: 'Save As...',
@@ -84,6 +87,8 @@ const mainMenuTemplate = [{
             click() {
                 // Save the file under a new name
                 saveFileAs();
+                // TODO: we need to move this to an event handler else we never know if the save failed
+                Menu.getApplicationMenu().getMenuItemById('menu-save').enabled = true;
             }
         }, {
             type: 'separator'
@@ -274,6 +279,14 @@ const saveFileAs = () => {
     // also take a look in the preload.js file for what happens next
     // once the file is selected
     win.webContents.send('message:update', 'communication-save-file');
+}
+
+//
+// Save the current file
+//
+const saveFile = () => {
+    // The filename / path we already have recorded
+    win.webContents.send('message:update', 'communication-save-current-file');
 }
 
 //
