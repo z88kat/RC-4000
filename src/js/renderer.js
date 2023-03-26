@@ -8,6 +8,13 @@ $(document).ready(function () {
     initApplication();
     // check the label status and disable buttons if needed
     checkLabelNumberStatus();
+
+    // week day picker, single selection
+    // https://www.jqueryscript.net/time-clock/inline-week-day-picker.html
+    $('#weekdays').weekdays({
+        singleSelect: true
+    });
+
 });
 
 //
