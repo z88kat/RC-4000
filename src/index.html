@@ -136,6 +136,19 @@
             </sl-button>
         </sl-dialog>
 
+        <!-- Add / Edit memo data -->
+        <sl-dialog label="Memo Data" class="dialog-data dialog-overview" id="dialog-memo-data" data-action="add">
+            <div class="row">
+                <div class="col ml-4">
+                    <textarea required min="1" max="24" maxlength="24" class="form-control form-input"
+                        id="memo-data-text" rows="2" cols="12"></textarea>
+                </div>
+            </div>
+            <sl-button slot="footer" variant="default" class="pr-2">Close</sl-button>
+            <sl-button slot="footer" variant="primary" id="btnAddMemoData"><i class="fa-solid fa-plus"></i> Add
+            </sl-button>
+        </sl-dialog>
+
     </body>
 
 </html>

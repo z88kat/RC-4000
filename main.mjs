@@ -14,6 +14,7 @@ const BrowserWindow = electron.BrowserWindow;
 const Menu = electron.Menu;
 const dialog = electron.dialog;
 const ipcMain = electron.ipcMain;
+const Notification = electron.Notification;
 
 // constant for development
 const isDev = process.env.NODE_ENV !== 'production';
@@ -80,6 +81,13 @@ const mainMenuTemplate = [{
             click() {
                 // Save the file under a new name
                 //  saveFileAs();
+
+                const NOTIFICATION_TITLE = 'Basic Notification'
+                const NOTIFICATION_BODY = 'Notification from the Main process'
+                new Notification({
+                    title: NOTIFICATION_TITLE,
+                    body: NOTIFICATION_BODY
+                }).show();
             }
         }, {
             type: 'separator'

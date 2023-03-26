@@ -33,6 +33,10 @@ const initApplication = () => {
     // delete a label entry
     $(document).on('click', '.delete-entry', deleteLabelEntry);
 
+    // add a new data entry, show the dialog
+    $(document).on('click', '.add-data-entry', addDataEntryDialog);
+    $('#btnAddMemoData').click(addMemoDataEntry);
+
     // delete a data entry
     $(document).on('click', '.delete-data', deleteDataEntry);
 
@@ -405,12 +409,12 @@ const tableRowHtml = (data) => {
             <td class="label">
                 ${data.label}
             </td>
-            <td style="width:20px" class="edit-entry">
+            <td style="width:20px">
                 <a href="#" class="add-data-entry" title="Add Data">
                     <i class="fa-regular fa-add"></i>
                 </a>
             </td>
-            <td style="width:20px" class="edit-entry" title="Edit Label">
+            <td style="width:20px" title="Edit Label">
                 <a href="#" class="edit-entry">
                     <i class="fa-regular fa-pen-to-square"></i>
                 </a>
@@ -528,6 +532,76 @@ const deleteLabelEntry = (e) => {
     checkLabelNumberStatus();
 }
 
+
+//
+// Add a new data entry to the selected label
+//
+const addDataEntryDialog = (e) => {
+    e.preventDefault();
+
+    let row = $(e.target).closest('tr');
+    // get the type of label
+    let type = row.data('type');
+    // get the label id
+    let id = row.data('id');
+
+    if (!id) return; // hmmmm?
+
+    // show the add data dialog
+    let dialog = null;
+    if (type === 0) dialog = document.querySelector('#dialog-memo-data');
+    if (type === 1) dialog = document.querySelector('#dialog-scheduled-data');
+    if (type === 2) dialog = document.querySelector('#dialog-weekly-data');
+    dialog.show();
+
+    // clear the text area
+    $(dialog).find('textarea').val('');
+
+    // Add the data id
+    // store the action and label id in the dialog so we know what to update
+    if (type === 0) $('#dialog-memo-data').data('id', id).data('action', 'add').data('label-id', id);
+    if (type === 1) $('#dialog-scheduled-data').data('action', 'add').data('label-id', id);
+    if (type === 2) $('#dialog-weekly-data').data('action', 'add').data('label-id', id);
+
+    // set the focus to the text area
+    setTimeout(() => {
+        // just find the text area and set the focus
+        $(dialog).find('textarea').focus();
+    }, 200);
+
+    // add the close button action to the dialog
+    const closeButton = dialog.querySelector('sl-button[slot="footer"]');
+    closeButton.addEventListener('click', () => dialog.hide());
+};
+
+//
+// Add a new memo data entry
+//
+const addMemoDataEntry = (e) => {
+
+    e.preventDefault();
+
+    let name = $('#memo-data-text').val().trim().toUpperCase();
+    if (!name) return;
+    if (name.length < 1) return;
+
+    // Get the id of the label we are adding the data to
+    let id = $('#dialog-memo-data').data('label-id');
+    if (!id) return;
+
+    // Add a new memo data
+    let index = actions.addMemoData(id, name);
+    // Add the row
+    let html = tableDataRowHtml(name, id, index);
+
+    // find the row with the id and append the new row after it
+    let row = $(`tr[data-id="${id}"]`).last();
+    row.after(html);
+
+    const dialog = document.querySelector('#dialog-memo-data');
+    dialog.hide();
+
+};
 
 //
 // Delete a single data entry
