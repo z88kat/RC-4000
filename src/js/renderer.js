@@ -12,8 +12,12 @@ $(document).ready(function () {
     // week day picker, single selection
     // https://www.jqueryscript.net/time-clock/inline-week-day-picker.html
     $('#weekdays').weekdays({
-        singleSelect: true
+        singleSelect: true,
+        selectedIndexes: [0],
+        days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'DAY']
     });
+
+
 
     // time picker for the weekly alarm
     // https://flatpickr.js.org/examples/
@@ -22,7 +26,31 @@ $(document).ready(function () {
         noCalendar: true,
         dateFormat: "h:i K",
         time_24hr: false,
-        minuteIncrement: 1
+        minuteIncrement: 1,
+        allowInput: true
+    });
+
+    // day / month picker for the scheduled alarm (years are totally ignored)
+    // https://flatpickr.js.org/examples/
+    flatpickr('#scheduled-date', {
+        enableTime: false,
+        noCalendar: false,
+        altInput: true,
+        altFormat: "F j",
+        dateFormat: "Y-m-d",
+        minDate: "today",
+        maxDate: new Date().fp_incr(356) // 356 days from now
+    });
+
+    // time picker for the weekly alarm
+    // https://flatpickr.js.org/examples/
+    flatpickr('#scheduled-time', {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "h:i K",
+        time_24hr: false,
+        minuteIncrement: 1,
+        allowInput: true
     });
 
 });

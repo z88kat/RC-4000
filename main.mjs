@@ -28,7 +28,7 @@ let win;
 function createWindow() {
     win = new BrowserWindow({
         width: isDev ? 1200 : 800,
-        height: 600,
+        height: 650,
         // allow resizing
         resizable: true,
         webPreferences: {
@@ -37,6 +37,7 @@ function createWindow() {
             sandbox: false,
             preload: path.join(__dirname, "/lib/preload.cjs"),
         },
+        icon: path.join(__dirname, '/src/icon-watch.png') // needs to be 64x64
     });
 
     // in development mode, show the dev tools
