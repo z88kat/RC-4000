@@ -9,11 +9,17 @@ $(document).ready(function () {
     // check the label status and disable buttons if needed
     checkLabelNumberStatus();
 
+
+    // Get the current day as an integer
+    // https://stackoverflow.com/questions/1531093/how-do-i-get-the-current-date-in-javascript
+    let d = new Date();
+    let n = d.getDay();
+
     // week day picker, single selection
     // https://www.jqueryscript.net/time-clock/inline-week-day-picker.html
     $('#weekdays').weekdays({
         singleSelect: true,
-        selectedIndexes: [0],
+        selectedIndexes: [n],
         days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'DAY']
     });
 
@@ -81,11 +87,16 @@ const initApplication = () => {
     // add a new data entry, show the dialog
     $(document).on('click', '.add-data-entry', addDataEntryDialog);
     // Click on the Add / Update button of the memo data dialog to save the entry
+
     $('#btnAddMemoData').click(addMemoDataEntry);
     // delete a data entry, just remove it
     $(document).on('click', '.delete-data', deleteDataEntry);
     // edit a data entry, show the dialog
     $(document).on('click', '.edit-data-entry', editDataEntryDialog);
+
+    // Click on the Add / Update button of the weekly data dialog to save the entry
+    $('#btnAddWeeklyData').click(addWeeklyDataEntry);
+
 
     // send data to watch
     $('#btnSendData').on('click', sendDataToWatch);
@@ -669,6 +680,15 @@ const addDataEntryDialog = (e) => {
 
     // clear the text area
     $(dialog).find('textarea').val('');
+    // Set the weekly day to the current day
+
+    // Set the time to 12:00 AM, i don't really care just do all of them
+    let time = new Date();
+    time.setHours(0);
+    time.setMinutes(0);
+    time.setSeconds(0);
+    time.setMilliseconds(0);
+    $(dialog).find('input[type="time"]').val(time.toTimeString().substring(0, 5));
 
     // Add the data id
     // store the action and label id in the dialog so we know what to update
@@ -721,6 +741,72 @@ const addMemoDataEntry = (e) => {
 
         // Add a new memo data
         let index = actions.addMemoData(id, name);
+        // Add the row
+        let html = tableDataRowHtml(name, id, index);
+
+        // find the row with the id and append the new row after it
+        let row = $(`tr[data-id="${id}"]`).last();
+        row.after(html);
+
+        // Scroll to the new row
+        setTimeout(() => {
+            let newrow = $(`tr[data-id="${id}"][data-index="${index}"]`).prevAll().length; // Find all sibling element in front of it
+            $("#table-scroller").animate({
+                scrollTop: newrow * 30
+            });
+        }, 200);
+    }
+
+    const dialog = document.querySelector('#dialog-memo-data');
+    dialog.hide();
+
+};
+
+
+//
+// Add a new weekly data entry
+//
+const addWeeklyDataEntry = (e) => {
+
+    e.preventDefault();
+
+    // get the title
+    let name = $('#weekly-data-text').val().trim().toUpperCase();
+
+    // get the selected day of the week index
+    let day = $('#weekdays').selectedIndexes()[0];
+    // get the time
+    let time = $('#weekly-time').val();
+    if (!time || time.length < 1) time = '12:00 AM'; // default to 12:00 AM
+
+    if (!name) return;
+    if (name.length < 1) return;
+
+    // Get the action
+    let action = $('#dialog-memo-data').data('action');
+
+    if (action === 'edit') {
+        // update the data entry
+        // Get the id and the index of the data entry
+        let id = $('#dialog-memo-data').data('id');
+        let index = $('#dialog-memo-data').data('index');
+        // find the row with the id and index and category = 'd'
+        let row = $(`tr[data-id="${id}"][data-index="${index}"][data-category="d"]`);
+        console.log('id', id, 'index', index, 'row', row);
+        // update the text
+        row.find('td:nth-child(2)').text(name);
+        actions.updateDataEntry(id, index, name);
+
+    } else {
+
+        // Get the id of the label we are adding the data to
+        let id = $('#dialog-weekly-data').data('label-id');
+        if (!id) return;
+
+
+
+        // Add a new weekly data
+        let index = actions.addWeeklyData(id, name, day, time);
         // Add the row
         let html = tableDataRowHtml(name, id, index);
 
