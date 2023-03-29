@@ -97,6 +97,8 @@ const initApplication = () => {
     // Click on the Add / Update button of the weekly data dialog to save the entry
     $('#btnAddWeeklyData').click(addWeeklyDataEntry);
 
+    // Click on the Add / Update button of the scheduled data dialog to save the entry
+    $('#btnAddScheduledData').click(addScheduledDataEntry);
 
     // send data to watch
     $('#btnSendData').on('click', sendDataToWatch);
@@ -558,14 +560,24 @@ const tableLabelRowHtml = (data) => {
 //
 const tableDataRowHtml = (data, id, index) => {
 
+    // test if the data entry is a string or object and parse the object
+    let dataEntry = '';
+    let type = 0;
+    if (typeof data === 'string') {
+        dataEntry = data;
+    } else {
+        dataEntry = data.full_label;
+        type = data.type;
+    }
+
 
     let d = `
-        <tr data-index="${index}" data-id="${id}" data-category="d">
+        <tr data-index="${index}" data-id="${id}" data-category="d" data-type="${type}">
             <td style="width:20px">
                 <!-- nothing -->
             </td>
             <td class="terminal">
-                ${data}
+                ${dataEntry}
             </td>
             <td style="width:20px" class="edit-entry">
                 <!-- Nothing -->
@@ -783,7 +795,7 @@ const addWeeklyDataEntry = (e) => {
     if (name.length < 1) return;
 
     // Get the action
-    let action = $('#dialog-memo-data').data('action');
+    let action = $('#dialog-weekly-data').data('action');
 
     if (action === 'edit') {
         // update the data entry
@@ -803,12 +815,11 @@ const addWeeklyDataEntry = (e) => {
         let id = $('#dialog-weekly-data').data('label-id');
         if (!id) return;
 
-
-
-        // Add a new weekly data
+        // Add a new weekly data, returns the index of the data entry
         let index = actions.addWeeklyData(id, name, day, time);
         // Add the row
-        let html = tableDataRowHtml(name, id, index);
+        let d = actions.getData(id, index);
+        let html = tableDataRowHtml(d, id, index);
 
         // find the row with the id and append the new row after it
         let row = $(`tr[data-id="${id}"]`).last();
@@ -823,10 +834,85 @@ const addWeeklyDataEntry = (e) => {
         }, 200);
     }
 
-    const dialog = document.querySelector('#dialog-memo-data');
+    const dialog = document.querySelector('#dialog-weekly-data');
     dialog.hide();
 
 };
+
+
+//
+// Add a new scheduled alarm data entry
+//
+const addScheduledDataEntry = (e) => {
+
+    e.preventDefault();
+
+    // get the title
+    let name = $('#scheduled-data-text').val().trim().toUpperCase();
+
+    // get the date
+    let date = $('#scheduled-date').val();
+    let month = '1';
+    let day = '1';
+    if (date && date.length > 9) {
+        // Now we need to extract the month and day from the date
+        month = date.substring(5, 7);
+        day = date.substring(8, 10);
+    }
+
+    // get the time
+    let time = $('#scheduled-time').val();
+    if (!time || time.length < 1) time = '12:00 AM'; // default to 12:00 AM
+
+    if (!name) return;
+    if (name.length < 1) return;
+
+    // Get the action
+    let action = $('#dialog-scheduled-data').data('action');
+
+    if (action === 'edit') {
+        // update the data entry
+        // Get the id and the index of the data entry
+        let id = $('#dialog-memo-data').data('id');
+        let index = $('#dialog-memo-data').data('index');
+        // find the row with the id and index and category = 'd'
+        let row = $(`tr[data-id="${id}"][data-index="${index}"][data-category="d"]`);
+        console.log('id', id, 'index', index, 'row', row);
+        // update the text
+        row.find('td:nth-child(2)').text(name);
+        actions.updateDataEntry(id, index, name);
+
+    } else {
+
+        // Get the id of the label we are adding the data to
+        let id = $('#dialog-scheduled-data').data('label-id');
+        if (!id) return;
+
+        // Add a new weekly data, returns the index of the data entry
+        let index = actions.addScheduledAlarmData(id, name, day, month, time);
+        // Add the row
+        let d = actions.getData(id, index);
+        let html = tableDataRowHtml(d, id, index);
+
+        // find the row with the id and append the new row after it
+        let row = $(`tr[data-id="${id}"]`).last();
+        row.after(html);
+
+        // Scroll to the new row
+        setTimeout(() => {
+            let newrow = $(`tr[data-id="${id}"][data-index="${index}"]`).prevAll().length; // Find all sibling element in front of it
+            $("#table-scroller").animate({
+                scrollTop: newrow * 30
+            });
+        }, 200);
+    }
+
+    const dialog = document.querySelector('#dialog-scheduled-data');
+    dialog.hide();
+
+};
+
+
 
 
 

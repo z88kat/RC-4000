@@ -117,14 +117,6 @@
                         id="scheduled-text" rows="2" cols="12"></textarea>
                 </div>
             </div>
-            <div class="row pt-4">
-                <div class="col-12 pl-4 pb-2">
-                    <input type="date" id="scheduled-date" class="form-control" placeholder="MM-DD" />
-                </div>
-                <div class="col-12 pl-4">
-                    <input type="time" id="scheduled-time" class="form-control" placeholder="12:00 PM" />
-                </div>
-            </div>
             <sl-button slot="footer" variant="default" class="pr-2">Close</sl-button>
             <sl-button slot="footer" variant="primary" id="btnAddScheduledLabel">
                 <i class="fa-solid fa-plus"></i> Add
@@ -176,8 +168,8 @@
             data-action="add" data-category="d" data-index="0" data-type="2" data-label-id="0">
             <div class="row">
                 <div class="col ml-4">
-                    <textarea required min="1" max="24" maxlength="24" class="form-control form-input"
-                        id="weekly-data-text" rows="2" cols="12"></textarea>
+                    <textarea required min="1" max="12" maxlength="24" class="form-control form-input"
+                        id="weekly-data-text" rows="1" cols="12"></textarea>
                 </div>
                 <div class="col">
                     DAY will select every day of the week
@@ -196,6 +188,27 @@
             </sl-button>
         </sl-dialog>
 
+        <!-- Add / Edit scheduled data -->
+        <sl-dialog label="Scheduled Alarm Data" class="dialog-data dialog-overview" id="dialog-scheduled-data"
+            data-action="add" data-category="d" data-index="0" data-type="2" data-label-id="0">
+            <div class="row">
+                <div class="col ml-4">
+                    <textarea required min="1" max="12" maxlength="12" class="form-control form-input"
+                        id="scheduled-data-text" rows="1" cols="12"></textarea>
+                </div>
+            </div>
+            <div class="row pt-4">
+                <div class="col-12 pl-4 pb-2">
+                    <input type="date" id="scheduled-date" class="form-control" placeholder="MM-DD" />
+                </div>
+                <div class="col-12 pl-4">
+                    <input type="time" id="scheduled-time" class="form-control" placeholder="12:00 PM" />
+                </div>
+            </div>
+            <sl-button slot="footer" variant="default" class="pr-2">Close</sl-button>
+            <sl-button slot="footer" variant="primary" id="btnAddScheduledData"><i class="fa-solid fa-plus"></i> Add
+            </sl-button>
+        </sl-dialog>
 
     </body>
 
