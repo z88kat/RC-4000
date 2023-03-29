@@ -44,7 +44,7 @@ $(document).ready(function () {
         altInput: true,
         altFormat: "F j",
         dateFormat: "Y-m-d",
-        minDate: "today",
+        //  minDate: "today",
         maxDate: new Date().fp_incr(356) // 356 days from now
     });
 
@@ -562,17 +562,18 @@ const tableDataRowHtml = (data, id, index) => {
 
     // test if the data entry is a string or object and parse the object
     let dataEntry = '';
-    let type = 0;
+    let dataObject = '';
     if (typeof data === 'string') {
         dataEntry = data;
     } else {
         dataEntry = data.full_label;
-        type = data.type;
+        // We need to stringify the object so we can store it in the data-object attribute
+        // otherwise the information is kind of lost when we try to parse it back out
+        dataObject = JSON.stringify(data);
     }
 
-
     let d = `
-        <tr data-index="${index}" data-id="${id}" data-category="d" data-type="${type}">
+        <tr data-index="${index}" data-id="${id}" data-category="d" data-object='${dataObject}'>
             <td style="width:20px">
                 <!-- nothing -->
             </td>
@@ -945,7 +946,35 @@ const editDataEntryDialog = (e) => {
 
     // Get the select data label and insert it into the text area
     let name = row.find('td:nth-child(2)').text().trim();
+
+    // If the type is an alarm then we need to get the date and time
+    // first extract the label
+    if (type === 1 || type === 2) {
+        let dataObject = $(row).data('object');
+        name = dataObject.label;
+
+        // Set the date and time for the scheduled alarm
+        if (type === 1) {
+            // Set the Date using day and month
+            let now = new Date();
+            now.setMonth(parseInt(dataObject.month) - 1);
+            now.setDate(parseInt(dataObject.day));
+            flatpickr('#scheduled-date', {
+                enableTime: false,
+                noCalendar: false,
+                altInput: true,
+                altFormat: "F j",
+                dateFormat: "Y-m-d",
+                defaultDate: now.toISOString().split('T')[0],
+                maxDate: new Date().fp_incr(356) // 356 days from now
+            });
+        }
+
+    }
+
+
     $(dialog).find('textarea').val(name);
+
 
     // Add the data id
     // store the action and label id in the dialog so we know what to update
