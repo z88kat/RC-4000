@@ -112,3 +112,6 @@ saves/RCSAVE
 # yarn stuff
 yarn.lock
 package-lock.json
+
+# electron build
+out/

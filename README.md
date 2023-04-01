@@ -240,3 +240,11 @@ The serialport package needs to be rebuilt for electron. Everytime you add a pac
 npm run rebuild
 ```
 
+## Electron Force
+
+You can only build the deb target on Linux or macOS machines with the fakeroot and dpkg packages installed.
+
+```
+sudo apt-get install fakeroot dpkg rpm
+npm run make
+```
