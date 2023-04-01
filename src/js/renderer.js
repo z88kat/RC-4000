@@ -731,7 +731,7 @@ const addMemoDataEntry = (e) => {
 
 
 //
-// Add a new weekly data entry
+// Add / Update weekly data entry
 //
 const addWeeklyDataEntry = (e) => {
 
@@ -749,26 +749,27 @@ const addWeeklyDataEntry = (e) => {
     if (!name) return;
     if (name.length < 1) return;
 
+    // Get the id of the label we are adding the data to
+    let id = $('#dialog-weekly-data').data('label-id');
+    if (!id) return;
+
     // Get the action
     let action = $('#dialog-weekly-data').data('action');
 
     if (action === 'edit') {
-        // update the data entry
-        // Get the id and the index of the data entry
-        let id = $('#dialog-memo-data').data('id');
-        let index = $('#dialog-memo-data').data('index');
+
+        // Get the current index of the data entry
+        let index = $('#dialog-weekly-data').data('index');
+        // Update weekly data, returns the data object
+        let data = actions.updateWeeklyData(id, index, name, day, time);
+
         // find the row with the id and index and category = 'd'
         let row = $(`tr[data-id="${id}"][data-index="${index}"][data-category="d"]`);
-        console.log('id', id, 'index', index, 'row', row);
+        $(row).data('object', data); // save the new data entry
         // update the text
-        row.find('td:nth-child(2)').text(name);
-        actions.updateDataEntry(id, index, name);
+        row.find('td:nth-child(2)').text(data.full_label);
 
     } else {
-
-        // Get the id of the label we are adding the data to
-        let id = $('#dialog-weekly-data').data('label-id');
-        if (!id) return;
 
         // Add a new weekly data, returns the index of the data entry
         let index = actions.addWeeklyData(id, name, day, time);
