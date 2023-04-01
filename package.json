@@ -1,7 +1,7 @@
 {
   "name": "rc-4000",
   "version": "1.0.0",
-  "description": "Sekio RC-4000Watch Manager",
+  "description": "Seiko RC-4000Watch Manager",
   "main": "index-electron.cjs",
   "module": "main.mjs",
   "type": "module",
@@ -13,7 +13,9 @@
     "rebuild": "electron-rebuild -f -w serialport",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "build": "electron-packager . RC-4000 --arch=x64 --overwrite --icon=src/icon-watch.ico --out=dist --asar --prune=true --ignore=node_modules/electron-*"
+    "help": "electron-packager . --help",
+    "build": "electron-packager . RC-4000 --arch=x64 --overwrite --icon=src/icon-watch.ico --out=dist --asar --prune=true --ignore=node_modules/electron-*",
+    "build-mac": "electron-packager . --platform=darwin --arch=x64 --overwrite --icon=src/icon-watch.ico --out=dist --asar --prune=true --ignore=node_modules/electron-*"
   },
   "repository": {
     "type": "git",

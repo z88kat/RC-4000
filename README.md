@@ -25,7 +25,7 @@ The watch manager is a command line tool & gui tool. It can from the command lin
 
 ```
 npm run cmd
-``
+```
 or
 ```
 node index.js
