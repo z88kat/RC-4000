@@ -9,55 +9,8 @@ $(document).ready(function () {
     // check the label status and disable buttons if needed
     checkLabelNumberStatus();
 
-
-    // Get the current day as an integer
-    // https://stackoverflow.com/questions/1531093/how-do-i-get-the-current-date-in-javascript
-    let d = new Date();
-    let n = d.getDay();
-
-    // week day picker, single selection
-    // https://www.jqueryscript.net/time-clock/inline-week-day-picker.html
-    $('#weekdays').weekdays({
-        singleSelect: true,
-        selectedIndexes: [n],
-        days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'DAY']
-    });
-
-
-
-    // time picker for the weekly alarm
-    // https://flatpickr.js.org/examples/
-    flatpickr('#weekly-time', {
-        enableTime: true,
-        noCalendar: true,
-        dateFormat: "h:i K",
-        time_24hr: false,
-        minuteIncrement: 1,
-        allowInput: true
-    });
-
-    // day / month picker for the scheduled alarm (years are totally ignored)
-    // https://flatpickr.js.org/examples/
-    flatpickr('#scheduled-date', {
-        enableTime: false,
-        noCalendar: false,
-        altInput: true,
-        altFormat: "F j",
-        dateFormat: "Y-m-d",
-        //  minDate: "today",
-        maxDate: new Date().fp_incr(356) // 356 days from now
-    });
-
-    // time picker for the weekly alarm
-    // https://flatpickr.js.org/examples/
-    flatpickr('#scheduled-time', {
-        enableTime: true,
-        noCalendar: true,
-        dateFormat: "h:i K",
-        time_24hr: false,
-        minuteIncrement: 1,
-        allowInput: true
-    });
+    // reset the dialogs to their original state
+    resetDialogs();
 
 });
 
@@ -675,6 +628,9 @@ const deleteLabelEntry = (e) => {
 const addDataEntryDialog = (e) => {
     e.preventDefault();
 
+    // reset the dialogs to their original state
+    resetDialogs();
+
     let row = $(e.target).closest('tr');
     // get the type of label
     let type = row.data('type');
@@ -833,6 +789,7 @@ const addWeeklyDataEntry = (e) => {
                 scrollTop: newrow * 30
             });
         }, 200);
+
     }
 
     const dialog = document.querySelector('#dialog-weekly-data');
@@ -922,6 +879,8 @@ const addScheduledDataEntry = (e) => {
 //
 const editDataEntryDialog = (e) => {
     e.preventDefault();
+
+    resetDialogs();
 
     let row = $(e.target).closest('tr');
     // get the label id
@@ -1066,4 +1025,61 @@ const updateUIForLoadedFile = () => {
     // check if we have reached the maximum number of labels
     checkLabelNumberStatus();
 
+};
+
+//
+// reset the dialogs to their original state
+//
+const resetDialogs = () => {
+    // Get the current day as an integer
+    // https://stackoverflow.com/questions/1531093/how-do-i-get-the-current-date-in-javascript
+    let d = new Date();
+    let n = d.getDay();
+
+    // remove the weekdays function from the element
+    // https://stackoverflow.com/questions/1232040/how-do-i-empty-an-element-in-javascript
+    $('#weekdays').empty();
+
+    // week day picker, single selection
+    // https://www.jqueryscript.net/time-clock/inline-week-day-picker.html
+    $('#weekdays').weekdays({
+        singleSelect: true,
+        selectedIndexes: [n],
+        days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'DAY']
+    });
+
+
+    // time picker for the weekly alarm
+    // https://flatpickr.js.org/examples/
+    flatpickr('#weekly-time', {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "h:i K",
+        time_24hr: false,
+        minuteIncrement: 1,
+        allowInput: true
+    });
+
+    // day / month picker for the scheduled alarm (years are totally ignored)
+    // https://flatpickr.js.org/examples/
+    flatpickr('#scheduled-date', {
+        enableTime: false,
+        noCalendar: false,
+        altInput: true,
+        altFormat: "F j",
+        dateFormat: "Y-m-d",
+        //  minDate: "today",
+        maxDate: new Date().fp_incr(356) // 356 days from now
+    });
+
+    // time picker for the weekly alarm
+    // https://flatpickr.js.org/examples/
+    flatpickr('#scheduled-time', {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "h:i K",
+        time_24hr: false,
+        minuteIncrement: 1,
+        allowInput: true
+    });
 };

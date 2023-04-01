@@ -37,7 +37,8 @@ function createWindow() {
             sandbox: false,
             preload: path.join(__dirname, "/lib/preload.cjs"),
         },
-        icon: path.join(__dirname, '/src/icon-watch.png') // needs to be 64x64
+        icon: path.join(__dirname, '/src/icon-watch.png'), // needs to be 64x64
+        show: false
     });
 
     // in development mode, show the dev tools
@@ -47,6 +48,10 @@ function createWindow() {
 
     win.loadFile("src/index.html");
 }
+
+win.once('ready-to-show', () => {
+    win.show()
+});
 
 const aboutDialog = () => {
     const aboutWin = new BrowserWindow({
