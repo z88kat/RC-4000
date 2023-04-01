@@ -47,11 +47,13 @@ function createWindow() {
     }
 
     win.loadFile("src/index.html");
+
+    win.once('ready-to-show', () => {
+        win.show()
+    });
 }
 
-win.once('ready-to-show', () => {
-    win.show()
-});
+
 
 const aboutDialog = () => {
     const aboutWin = new BrowserWindow({

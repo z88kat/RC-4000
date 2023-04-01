@@ -39,13 +39,15 @@ const initApplication = () => {
 
     // add a new data entry, show the dialog
     $(document).on('click', '.add-data-entry', addDataEntryDialog);
+    // edit a data entry, show the dialog
+    $(document).on('click', '.edit-data-entry', editDataEntryDialog);
+
     // Click on the Add / Update button of the memo data dialog to save the entry
 
     $('#btnAddMemoData').click(addMemoDataEntry);
     // delete a data entry, just remove it
     $(document).on('click', '.delete-data', deleteDataEntry);
-    // edit a data entry, show the dialog
-    $(document).on('click', '.edit-data-entry', editDataEntryDialog);
+
 
     // Click on the Add / Update button of the weekly data dialog to save the entry
     $('#btnAddWeeklyData').click(addWeeklyDataEntry);
@@ -484,9 +486,7 @@ const tableLabelRowHtml = (data) => {
             <td style="width:20px">
                 <i class="${icon}"></i>
             </td>
-            <td class="label">
-                ${data.label}
-            </td>
+            <td class="label keep-spaces">${data.label}</td>
             <td style="width:20px">
                 <a href="#" class="add-data-entry" title="Add Data">
                     <i class="fa-regular fa-add"></i>
@@ -530,9 +530,7 @@ const tableDataRowHtml = (data, id, index) => {
             <td style="width:20px">
                 <!-- nothing -->
             </td>
-            <td class="terminal">
-                ${dataEntry}
-            </td>
+            <td class="terminal keep-spaces">${dataEntry}</td>
             <td style="width:20px" class="edit-entry">
                 <!-- Nothing -->
             </td>
@@ -670,6 +668,10 @@ const addDataEntryDialog = (e) => {
         // just find the text area and set the focus
         $(dialog).find('textarea').focus();
     }, 200);
+
+    // Make sure the button says "add"
+    let button = dialog.querySelector('sl-button[slot="footer"][variant="primary"]');
+    button.innerHTML = '<i class="fa-solid fa-plus"></i> Add';
 
     // add the close button action to the dialog
     const closeButton = dialog.querySelector('sl-button[slot="footer"]');
