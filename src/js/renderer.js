@@ -806,6 +806,12 @@ const addScheduledDataEntry = (e) => {
 
     // get the title
     let name = $('#scheduled-data-text').val().trim().toUpperCase();
+    if (!name) return;
+    if (name.length < 1) return;
+
+    // Get the id of the label we are adding the data to
+    const id = $('#dialog-scheduled-data').data('label-id');
+    if (!id) return;
 
     // get the date
     let date = $('#scheduled-date').val();
@@ -821,31 +827,26 @@ const addScheduledDataEntry = (e) => {
     let time = $('#scheduled-time').val();
     if (!time || time.length < 1) time = '12:00 AM'; // default to 12:00 AM
 
-    if (!name) return;
-    if (name.length < 1) return;
-
     // Get the action
     let action = $('#dialog-scheduled-data').data('action');
 
     if (action === 'edit') {
+
         // update the data entry
         // Get the id and the index of the data entry
-        let id = $('#dialog-memo-data').data('id');
-        let index = $('#dialog-memo-data').data('index');
+        let index = $('#dialog-scheduled-data').data('index');
+        let data = actions.updateScheduledAlarmData(id, index, name, day, month, time);
+
         // find the row with the id and index and category = 'd'
         let row = $(`tr[data-id="${id}"][data-index="${index}"][data-category="d"]`);
-        console.log('id', id, 'index', index, 'row', row);
         // update the text
-        row.find('td:nth-child(2)').text(name);
-        actions.updateDataEntry(id, index, name);
+        row.find('td:nth-child(2)').text(data.full_label);
+        $(row).data('object', data); // save the new data entry
 
     } else {
 
-        // Get the id of the label we are adding the data to
-        let id = $('#dialog-scheduled-data').data('label-id');
-        if (!id) return;
-
         // Add a new weekly data, returns the index of the data entry
+        //console.log('id: ' + id + ', name: ' + name + ', day: ' + day + ', month: ' + month + ', time: ' + time + '')
         let index = actions.addScheduledAlarmData(id, name, day, month, time);
         // Add the row
         let d = actions.getData(id, index);
@@ -1085,6 +1086,7 @@ const resetDialogs = () => {
         altFormat: "F j",
         dateFormat: "Y-m-d",
         //  minDate: "today",
+        defaultDate: "today",
         maxDate: new Date().fp_incr(356) // 356 days from now
     });
 
@@ -1096,6 +1098,7 @@ const resetDialogs = () => {
         dateFormat: "h:i K",
         time_24hr: false,
         minuteIncrement: 1,
-        allowInput: true
+        allowInput: true,
+        defaultDate: '12:00 AM'
     });
 };
