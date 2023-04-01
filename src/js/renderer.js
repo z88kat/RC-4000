@@ -41,17 +41,13 @@ const initApplication = () => {
     $(document).on('click', '.add-data-entry', addDataEntryDialog);
     // edit a data entry, show the dialog
     $(document).on('click', '.edit-data-entry', editDataEntryDialog);
-
-    // Click on the Add / Update button of the memo data dialog to save the entry
-
-    $('#btnAddMemoData').click(addMemoDataEntry);
     // delete a data entry, just remove it
     $(document).on('click', '.delete-data', deleteDataEntry);
 
-
+    // Click on the Add / Update button of the memo data dialog to save the entry
+    $('#btnAddMemoData').click(addMemoDataEntry);
     // Click on the Add / Update button of the weekly data dialog to save the entry
     $('#btnAddWeeklyData').click(addWeeklyDataEntry);
-
     // Click on the Add / Update button of the scheduled data dialog to save the entry
     $('#btnAddScheduledData').click(addScheduledDataEntry);
 
@@ -912,7 +908,7 @@ const editDataEntryDialog = (e) => {
     // first extract the label
     if (type === 1 || type === 2) {
         let dataObject = $(row).data('object');
-        name = dataObject.label;
+        name = dataObject.label.trim();
 
         // Set the date and time for the scheduled alarm
         if (type === 1) {
@@ -929,13 +925,32 @@ const editDataEntryDialog = (e) => {
                 defaultDate: now.toISOString().split('T')[0],
                 maxDate: new Date().fp_incr(356) // 356 days from now
             });
+        } else if (type === 2) {
+            // Set the day of the week
+            let day = parseInt(dataObject.dayOfWeek || 7);
+            $('#weekdays').empty();
+            $('#weekdays').weekdays({
+                singleSelect: true,
+                selectedIndexes: [day],
+                days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'DAY']
+            });
+            // Set the time
+            flatpickr('#weekly-time', {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "h:i K",
+                time_24hr: false,
+                minuteIncrement: 1,
+                allowInput: true,
+                defaultDate: dataObject.timeString || '12:00 AM'
+            });
+
+
         }
 
     }
 
-
     $(dialog).find('textarea').val(name);
-
 
     // Add the data id
     // store the action and label id in the dialog so we know what to update
@@ -947,7 +962,6 @@ const editDataEntryDialog = (e) => {
     // Modify the dialog button from Add to Update
     let button = dialog.querySelector('sl-button[slot="footer"][variant="primary"]');
     button.innerHTML = '<i class="fa-solid fa-file-pen"></i> Update';
-
 
     // set the focus to the text area
     setTimeout(() => {
@@ -1016,7 +1030,6 @@ const updateUIForLoadedFile = () => {
     // populate the table
     for (let i = 0; i < data.length; i++) {
         let d = data[i];
-        console.log(d);
         addRowToTable(d);
         // Loop over any data entries and add them to the table
         d.store.forEach((item, index) => {
