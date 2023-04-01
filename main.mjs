@@ -34,6 +34,7 @@ function createWindow() {
         webPreferences: {
             contextIsolation: true,
             nodeIntegration: true,
+            enableRemoteModule: true,
             sandbox: false,
             preload: path.join(__dirname, "/lib/preload.cjs"),
         },
@@ -43,7 +44,8 @@ function createWindow() {
 
     // in development mode, show the dev tools
     if (isDev) {
-        win.webContents.openDevTools();
+        // a bit a problem during the build, so we disable it
+        // win.webContents.openDevTools();
     }
 
     win.loadFile("src/index.html");

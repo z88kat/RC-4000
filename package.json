@@ -2,7 +2,7 @@
   "name": "rc-4000",
   "version": "1.0.0",
   "description": "Sekio RC-4000Watch Manager",
-  "main": "index.js",
+  "main": "index-electron.cjs",
   "module": "main.mjs",
   "type": "module",
   "scripts": {
@@ -12,7 +12,8 @@
     "electron": "./node_modules/electron/dist/electron index-electron.cjs --no-sandbox",
     "rebuild": "electron-rebuild -f -w serialport",
     "package": "electron-forge package",
-    "make": "electron-forge make"
+    "make": "electron-forge make",
+    "build": "electron-packager . RC-4000 --arch=x64 --overwrite --icon=src/icon-watch.ico --out=dist --asar --prune=true --ignore=node_modules/electron-*"
   },
   "repository": {
     "type": "git",
@@ -34,7 +35,7 @@
     "electron-squirrel-startup": "^1.0.0",
     "esm": "^3.2.25",
     "flatpickr": "^4.6.13",
-    "fs-extra": "^11.1.0",
+    "fs-extra": "^11.1.1",
     "moment": "^2.29.4",
     "prompts": "^2.4.2",
     "pubsub-js": "^1.9.4",
@@ -46,6 +47,7 @@
     "@electron-forge/maker-rpm": "^6.1.0",
     "@electron-forge/maker-squirrel": "^6.1.0",
     "@electron-forge/maker-zip": "^6.1.0",
-    "electron": "^23.1.4"
+    "electron": "^23.1.4",
+    "electron-packager": "^17.1.1"
   }
 }

@@ -21,13 +21,13 @@ yarn
 
 ## Usage
 
-The watch manager is a command line tool. It can be used with the following command:
+The watch manager is a command line tool & gui tool. It can from the command line with the following command:
 
 ```
-npm start
-
+npm run cmd
+``
 or
-
+```
 node index.js
 ```
 
@@ -41,6 +41,12 @@ You can also specify the file to load with the `--load` option:
 
 ```
 node index.js --load /path/to/file
+```
+
+For the electron (GUI) app:
+
+```
+npm run electron
 ```
 
 
@@ -247,4 +253,17 @@ You can only build the deb target on Linux or macOS machines with the fakeroot a
 ```
 sudo apt-get install fakeroot dpkg rpm
 npm run make
+```
+
+This is simply not working for me.  I switched to electron-packager.
+
+
+## Electron Packager
+
+npx electron-packager <sourcedir> <appname> --platform=<platform> --arch=<arch> [optional flags...]
+
+```
+npm run build
+cd dist
+zip -r RC-4000-linux-x64.zip RC-4000-linux-x64/
 ```

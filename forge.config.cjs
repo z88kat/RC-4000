@@ -1,7 +1,7 @@
 module.exports = {
   packagerConfig: {
     // ignore the index.js file
-    //ignore: ['index.js', 'main.js'],
+    ignore: ['index.js'],
   },
   rebuildConfig: {},
   makers: [{

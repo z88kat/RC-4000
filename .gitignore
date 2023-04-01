@@ -115,3 +115,4 @@ package-lock.json
 
 # electron build
 out/
+rc-4000-linux-x64/
