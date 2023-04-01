@@ -105,6 +105,7 @@ dist
 
 # configuration
 -config
+.DS_Store
 
 # my test file :-)
 saves/RCSAVE
