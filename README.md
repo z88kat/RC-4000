@@ -6,14 +6,14 @@ NodeJS command line tool to manage Sekio RC-1000 / RC-4000 devices.
 
 Information on the Sekio RC-1000/RC-4000 including data sheets and downloads can be found here: http://www.z88dx.com
 
-## Installation
+# Installation
 
-# Requirements
+## Requirements
 
 * NodeJS 12.0.0 or higher
 * Yarn 1.0.0 or higher
 
-# Install
+## Install
 
 ```
 yarn
@@ -48,7 +48,6 @@ For the electron (GUI) app:
 ```
 npm run electron
 ```
-
 
 ## Troubleshooting
 
@@ -246,7 +245,7 @@ The serialport package needs to be rebuilt for electron. Everytime you add a pac
 npm run rebuild
 ```
 
-## Electron Force
+## Electron Forge
 
 You can only build the deb target on Linux or macOS machines with the fakeroot and dpkg packages installed.
 
@@ -255,14 +254,15 @@ sudo apt-get install fakeroot dpkg rpm
 npm run make
 ```
 
-This is not working for me.  I switched to electron-builder.
+Eletron Forge working for me.  I switched to electron-builder.
 
 
 ## Electron Builder
 
-Electron builder is used for packaging the application.  It is configured in package.json.
+Electron builder is used for packaging the application.  It is configured in package.json & electron-builder.json.
 
 ```
 npm run build
 cd dist
 ```
+
