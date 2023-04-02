@@ -8,5 +8,8 @@
     "asar": true,
     "directories": {
         "output": "dist"
+    },
+    "linux": {
+        "category": "Utility"
     }
 }
