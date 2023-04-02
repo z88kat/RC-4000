@@ -1,5 +1,5 @@
 {
-  "name": "rc-4000",
+  "name": "WristTerminal",
   "version": "1.0.0",
   "description": "Seiko RC-4000Watch Manager",
   "main": "index-electron.cjs",
@@ -9,13 +9,13 @@
     "cmd": "node index.js",
     "start": "electron-forge start",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "electron": "./node_modules/electron/dist/electron index-electron.cjs --no-sandbox",
+    "electron": "electron index-electron.cjs --no-sandbox",
     "rebuild": "electron-rebuild -f -w serialport",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "help": "electron-packager . --help",
-    "build": "electron-packager . RC-4000 --arch=x64 --overwrite --icon=src/icon-watch.ico --out=dist --asar --prune=true --ignore=node_modules/electron-*",
-    "build-mac": "electron-packager . --platform=darwin --arch=x64 --overwrite --icon=src/icon-watch.ico --out=dist --asar --prune=true --ignore=node_modules/electron-*"
+    "help": "electron-builder --help",
+    "build": "electron-builder --mac --win --linux",
+    "postinstall": "electron-builder install-app-deps"
   },
   "repository": {
     "type": "git",
@@ -33,7 +33,6 @@
     "colors": "^1.4.0",
     "command-line-args": "^5.2.1",
     "command-line-usage": "^6.1.3",
-    "electron-rebuild": "^3.2.9",
     "electron-squirrel-startup": "^1.0.0",
     "esm": "^3.2.25",
     "flatpickr": "^4.6.13",
@@ -50,6 +49,48 @@
     "@electron-forge/maker-squirrel": "^6.1.0",
     "@electron-forge/maker-zip": "^6.1.0",
     "electron": "^23.1.4",
-    "electron-packager": "^17.1.1"
+    "electron-builder": "^23.6.0",
+    "electron-packager": "^17.1.1",
+    "electron-rebuild": "^3.2.9"
+  },
+  "build": {
+    "appId": "com.z88kat.rc4000",
+    "productName": "RC-4000",
+    "asar": true,
+    "directories": {
+      "output": "dist"
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "rpm",
+        "AppImage"
+      ]
+    },
+    "win": {
+      "target": [
+        "squirrel"
+      ]
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "icon": "src/icon-watch.ico",
+      "category": "public.app-category.utilities",
+      "entitlements": "entitlements.mac.plist",
+      "entitlementsInherit": "entitlements.mac.plist",
+      "extendInfo": {
+        "CFBundleURLTypes": [{
+          "CFBundleURLName": "RC-4000",
+          "CFBundleURLSchemes": [
+            "rc4000"
+          ]
+        }]
+      },
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "provisioningProfile": "embedded.provisionprofile"
+    }
   }
 }

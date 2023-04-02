@@ -212,7 +212,7 @@ const letsGetStarted = async function () {
     console.log(chalk.blue('Wrist Terminal RC-1000 / RC-4000'));
     console.log(chalk.blue('Data Manager Program'));
     console.log(chalk.gray(line));
-    console.log(chalk.magenta(String.fromCharCode(9608) + ' Version ' + VERSION) + ' ' + String.fromCharCode(183) + ' ' + options.load);
+    console.log(chalk.magenta(String.fromCharCode(9608) + ' Version ' + VERSION) + ' ' + String.fromCharCode(183) + ' ' + (options.load || ''));
     console.log(chalk.gray(line));
     console.log(chalk.gray('Please read the operation manual before using this program.'));
     console.log(chalk.gray(line));

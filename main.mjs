@@ -18,7 +18,6 @@ const Notification = electron.Notification;
 
 const NOTIFICATION_TITLE = 'Seiko Watch'
 
-
 // constant for development
 const isDev = process.env.NODE_ENV !== 'production';
 
@@ -35,8 +34,8 @@ function createWindow() {
             contextIsolation: true,
             nodeIntegration: true,
             enableRemoteModule: true,
-            sandbox: false,
-            preload: path.join(__dirname, "/lib/preload.cjs"),
+            // We need to put the preload at the root level otherwise electron just totally exludes it
+            preload: path.join(app.getAppPath(), "preload.cjs"),
         },
         icon: path.join(__dirname, '/src/icon-watch.png'), // needs to be 64x64
         show: false
@@ -44,8 +43,8 @@ function createWindow() {
 
     // in development mode, show the dev tools
     if (isDev) {
-        // a bit a problem during the build, so we disable it
-        // win.webContents.openDevTools();
+        // not sure how to disable this during the build process
+        //win.webContents.openDevTools();
     }
 
     win.loadFile("src/index.html");
@@ -56,7 +55,7 @@ function createWindow() {
 }
 
 
-
+// About dialog, not using this right now
 const aboutDialog = () => {
     const aboutWin = new BrowserWindow({
         title: 'About',
