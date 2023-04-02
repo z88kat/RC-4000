@@ -255,15 +255,14 @@ sudo apt-get install fakeroot dpkg rpm
 npm run make
 ```
 
-This is simply not working for me.  I switched to electron-packager.
+This is not working for me.  I switched to electron-builder.
 
 
-## Electron Packager
+## Electron Builder
 
-npx electron-packager <sourcedir> <appname> --platform=<platform> --arch=<arch> [optional flags...]
+Electron builder is used for packaging the application.  It is configured in package.json.
 
 ```
 npm run build
 cd dist
-zip -r RC-4000-linux-x64.zip RC-4000-linux-x64/
 ```

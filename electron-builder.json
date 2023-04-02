@@ -1,0 +1,12 @@
+{
+
+    "appId": "com.z88dx.rc4000",
+    "buildVersion": "1.0.0",
+    "productName": "WristTerminal",
+    "executableName": "WristTerminal",
+    "artifactName": "WristTerminal-${version}.${ext}",
+    "asar": true,
+    "directories": {
+        "output": "dist"
+    }
+}

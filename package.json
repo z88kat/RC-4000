@@ -1,7 +1,7 @@
 {
   "name": "WristTerminal",
   "version": "1.0.0",
-  "description": "Seiko RC-4000Watch Manager",
+  "description": "Seiko RC-4000 / RC-1000 Wrist Terminal for mangement of memos and alarms on your watch.",
   "main": "index-electron.cjs",
   "module": "main.mjs",
   "type": "module",
@@ -14,7 +14,9 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "help": "electron-builder --help",
-    "build": "electron-builder --mac --win --linux",
+    "build": "electron-builder build --x64",
+    "build-win": "electron-builder build --win --x64",
+    "build-linux": "electron-builder build --linux",
     "postinstall": "electron-builder install-app-deps"
   },
   "repository": {
@@ -50,47 +52,8 @@
     "@electron-forge/maker-zip": "^6.1.0",
     "electron": "^23.1.4",
     "electron-builder": "^23.6.0",
+    "electron-builder-squirrel-windows": "^24.1.2",
     "electron-packager": "^17.1.1",
     "electron-rebuild": "^3.2.9"
-  },
-  "build": {
-    "appId": "com.z88kat.rc4000",
-    "productName": "RC-4000",
-    "asar": true,
-    "directories": {
-      "output": "dist"
-    },
-    "linux": {
-      "target": [
-        "deb",
-        "rpm",
-        "AppImage"
-      ]
-    },
-    "win": {
-      "target": [
-        "squirrel"
-      ]
-    },
-    "mac": {
-      "target": [
-        "dmg"
-      ],
-      "icon": "src/icon-watch.ico",
-      "category": "public.app-category.utilities",
-      "entitlements": "entitlements.mac.plist",
-      "entitlementsInherit": "entitlements.mac.plist",
-      "extendInfo": {
-        "CFBundleURLTypes": [{
-          "CFBundleURLName": "RC-4000",
-          "CFBundleURLSchemes": [
-            "rc4000"
-          ]
-        }]
-      },
-      "hardenedRuntime": true,
-      "gatekeeperAssess": false,
-      "provisioningProfile": "embedded.provisionprofile"
-    }
   }
 }
