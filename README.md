@@ -13,6 +13,10 @@ Information on the Sekio RC-1000/RC-4000 including data sheets and downloads can
 * NodeJS 12.0.0 or higher
 * Yarn 1.0.0 or higher
 
+## Windows Setup
+
+npm config set msbuild_path "C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\MSBuild.exe"
+
 ## Install
 
 ```

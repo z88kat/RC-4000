@@ -8,10 +8,8 @@ $(document).ready(function () {
     initApplication();
     // check the label status and disable buttons if needed
     checkLabelNumberStatus();
-
     // reset the dialogs to their original state
     resetDialogs();
-
 });
 
 //
@@ -197,8 +195,9 @@ const saveSerialPort = (e) => {
     const dialog = document.querySelector('#dialog-port');
     dialog.hide();
 
-    if (val.length > 3) {
-        actions.setPort(val);
+    if (val.length > 2) {
+        // save the port to the local storage
+        localStorage.setItem('port', val);
     }
 }
 
@@ -235,7 +234,9 @@ const setPort = () => {
     const closeButton = dialog.querySelector('sl-button[slot="footer"]');
     closeButton.addEventListener('click', () => dialog.hide());
 
-    $('#port-text').val(actions.getPort());
+    // Get the current port from the local storage
+    let port = localStorage.getItem('port') || '/dev/ttyUSB0';
+    $('#port-text').val(port);
 
     setTimeout(() => {
         $('#port-text').focus();
