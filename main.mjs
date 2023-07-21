@@ -44,7 +44,7 @@ function createWindow() {
     // in development mode, show the dev tools
     if (isDev) {
         // not sure how to disable this during the build process
-        //win.webContents.openDevTools();
+        win.webContents.openDevTools();
     }
 
     win.loadFile("src/index.html");

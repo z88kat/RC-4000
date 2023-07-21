@@ -9,6 +9,7 @@
     "cmd": "node index.js",
     "start": "electron-forge start",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx electronmon index-electron.cjs",
     "electron": "electron index-electron.cjs --no-sandbox",
     "rebuild": "electron-rebuild -f -w serialport",
     "package": "electron-forge package",
@@ -30,11 +31,10 @@
   },
   "homepage": "https://github.com/z88kat/RC-4000#readme",
   "dependencies": {
-    "@shoelace-style/shoelace": "^2.3.0",
     "chalk": "^5.2.0",
     "colors": "^1.4.0",
     "command-line-args": "^5.2.1",
-    "command-line-usage": "^6.1.3",
+    "command-line-usage": "^7.0.1",
     "electron-squirrel-startup": "^1.0.0",
     "esm": "^3.2.25",
     "flatpickr": "^4.6.13",
@@ -42,7 +42,7 @@
     "moment": "^2.29.4",
     "prompts": "^2.4.2",
     "pubsub-js": "^1.9.4",
-    "serialport": "^10.5.0"
+    "serialport": "^11.0.0"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.1.0",

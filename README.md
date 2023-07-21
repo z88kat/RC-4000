@@ -15,7 +15,14 @@ Information on the Sekio RC-1000/RC-4000 including data sheets and downloads can
 
 ## Windows Setup
 
+
+If you plan to make a native windows build your are going to need Visual Studio to compile the serial drivers for the native platform.
+
+https://stackoverflow.com/questions/57541402/node-gyp-configure-got-gyp-err-find-vs
+
+npm config set python C:\Python311\python.exe
 npm config set msbuild_path "C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\MSBuild.exe"
+
 
 ## Install
 

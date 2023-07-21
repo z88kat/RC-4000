@@ -158,13 +158,7 @@ const showToast = (message) => {
 //
 const showSendDataDialog = () => {
     // open the dialog
-    const dialog = document.querySelector('#dialog-send');
-    dialog.show();
-
-    // Add the close button listener, basically it adds the event listener to the first button
-    // which happens to be the close button
-    const closeButton = dialog.querySelector('sl-button[slot="footer"]');
-    closeButton.addEventListener('click', () => dialog.hide());
+    $('#dialog-send').modal('show');
 };
 
 //
@@ -174,8 +168,8 @@ const sendDataToWatch = (e) => {
 
     e.preventDefault();
 
-    const dialog = document.querySelector('#dialog-send');
-    dialog.hide();
+    // Close the dialog-send modal
+    $('#dialog-send').modal('hide');
 
     actions.sendDataToWatch();
 
@@ -228,11 +222,8 @@ const sendDataProgress = () => {
 // Set the port
 //
 const setPort = () => {
-    // open the dialog
-    const dialog = document.querySelector('#dialog-port');
-    dialog.show();
-    const closeButton = dialog.querySelector('sl-button[slot="footer"]');
-    closeButton.addEventListener('click', () => dialog.hide());
+    // open the port modal dialog
+    $('#dialog-port').modal('show');
 
     // Get the current port from the local storage
     let port = localStorage.getItem('port') || '/dev/ttyUSB0';
@@ -283,11 +274,11 @@ const addWeelkyLabel = () => {
     $('#dialog-weekly').data('action', 'add');
 
     // open the dialog
-    const dialog = document.querySelector('#dialog-weekly');
-    dialog.show();
+    $('#dialog-weekly').modal('show');
+
     // Modify the dialog button to Add
-    let button = dialog.querySelector('sl-button[slot="footer"][variant="primary"]');
-    button.innerHTML = '<i class="fa-solid fa-plus"></i> Add';
+    let button = $('#dialog-weekly .action-btn');
+    button.html('<i class="fa-solid fa-plus fa-fw"></i> Add');
 
     $('#weekly-text').val('');
 
@@ -295,8 +286,6 @@ const addWeelkyLabel = () => {
         $('#weekly-text').focus();
     }, 200);
 
-    const closeButton = dialog.querySelector('sl-button[slot="footer"]');
-    closeButton.addEventListener('click', () => dialog.hide());
 };
 
 //
@@ -307,20 +296,17 @@ const addScheduledLabel = () => {
     $('#dialog-scheduled').data('action', 'add');
 
     // open the dialog
-    const dialog = document.querySelector('#dialog-scheduled');
-    dialog.show()
+    $('#dialog-scheduled').modal('show');
+
     // Modify the dialog button to Add
-    let button = dialog.querySelector('sl-button[slot="footer"][variant="primary"]');
-    button.innerHTML = '<i class="fa-solid fa-plus"></i> Add';
+    let button = $('#dialog-scheduled .action-btn');
+    button.html('<i class="fa-solid fa-plus fa-fw"></i> Add');
 
     $('#scheduled-text').val('');
 
     setTimeout(() => {
         $('#scheduled-text').focus();
     }, 200);
-
-    const closeButton = dialog.querySelector('sl-button[slot="footer"]');
-    closeButton.addEventListener('click', () => dialog.hide());
 };
 
 //
@@ -329,14 +315,14 @@ const addScheduledLabel = () => {
 const addMemoLabel = () => {
 
     // we are adding, not editing
-    $('#dialog-scheduled').data('action', 'add');
+    $('#dialog-memo').data('action', 'add');
 
     // open the dialog
-    const dialog = document.querySelector('#dialog-memo');
-    dialog.show()
+    $('#dialog-memo').modal('show');
+
     // Modify the dialog button to Add
-    let button = dialog.querySelector('sl-button[slot="footer"][variant="primary"]');
-    button.innerHTML = '<i class="fa-solid fa-plus"></i> Add';
+    let button = $('#dialog-memo .action-btn');
+    button.html('<i class="fa-solid fa-plus fa-fw"></i> Add');
 
     $('#memo-text').val('');
 
@@ -344,20 +330,20 @@ const addMemoLabel = () => {
         $('#memo-text').focus();
     }, 200);
 
-    const closeButton = dialog.querySelector('sl-button[slot="footer"]');
-    closeButton.addEventListener('click', () => dialog.hide());
 };
 
 
 //
 // add a single memo label entry
 //
-const addMemoLabelEntry = () => {
+const addMemoLabelEntry = (e) => {
+    e.preventDefault();
+
     let name = $('#memo-text').val().trim();
     if (!name) return;
     if (name.length < 1) return;
 
-    const action = $('#dialog-memo').closest('.dialog-label').data('action');
+    const action = $('#dialog-memo').data('action');
 
     if (action === 'edit') {
         // we are editing an existing label
@@ -381,8 +367,8 @@ const addMemoLabelEntry = () => {
         });
     }
 
-    const dialog = document.querySelector('#dialog-memo');
-    dialog.hide();
+    // Hide the modal
+    $('#dialog-memo').modal('hide');
 
     // check if we have reached the maximum number of labels
     checkLabelNumberStatus();
@@ -407,8 +393,7 @@ const addWeeklyLabelEntry = () => {
         label: memo.label
     });
 
-    const dialog = document.querySelector('#dialog-weekly');
-    dialog.hide();
+    $('#dialog-weekly').modal('hide');
 
     // check if we have reached the maximum number of labels
     checkLabelNumberStatus();
@@ -433,8 +418,7 @@ const addScheduledLabelEntry = () => {
         label: memo.label
     });
 
-    const dialog = document.querySelector('#dialog-scheduled');
-    dialog.hide();
+    $('#dialog-scheduled').modal('hide');
 
     // check if we have reached the maximum number of labels
     checkLabelNumberStatus();
@@ -636,11 +620,11 @@ const addDataEntryDialog = (e) => {
 
     // show the add data dialog
     let dialog = null;
-    if (type === 0) dialog = document.querySelector('#dialog-memo-data');
-    if (type === 1) dialog = document.querySelector('#dialog-scheduled-data');
-    if (type === 2) dialog = document.querySelector('#dialog-weekly-data');
+    if (type === 0) dialog = '#dialog-memo-data';
+    if (type === 1) dialog = '#dialog-scheduled-data';
+    if (type === 2) dialog = '#dialog-weekly-data';
 
-    dialog.show();
+    $(dialog).modal('show');
 
     // clear the text area
     $(dialog).find('textarea').val('');
@@ -667,12 +651,8 @@ const addDataEntryDialog = (e) => {
     }, 200);
 
     // Make sure the button says "add"
-    let button = dialog.querySelector('sl-button[slot="footer"][variant="primary"]');
-    button.innerHTML = '<i class="fa-solid fa-plus"></i> Add';
-
-    // add the close button action to the dialog
-    const closeButton = dialog.querySelector('sl-button[slot="footer"]');
-    closeButton.addEventListener('click', () => dialog.hide());
+    let button = $(dialog).find('.action-btn');
+    button.html('<i class="fa-solid fa-plus fa-fw"></i> Add');
 };
 
 //
@@ -725,8 +705,7 @@ const addMemoDataEntry = (e) => {
         }, 200);
     }
 
-    const dialog = document.querySelector('#dialog-memo-data');
-    dialog.hide();
+    $('#dialog-memo-data').modal('hide');
 
 };
 
@@ -792,8 +771,7 @@ const addWeeklyDataEntry = (e) => {
 
     }
 
-    const dialog = document.querySelector('#dialog-weekly-data');
-    dialog.hide();
+    $('#dialog-weekly-data').modal('hide');
 
 };
 
@@ -899,10 +877,10 @@ const editDataEntryDialog = (e) => {
 
     // show the add data dialog
     let dialog = null;
-    if (type === 0) dialog = document.querySelector('#dialog-memo-data');
-    if (type === 1) dialog = document.querySelector('#dialog-scheduled-data');
-    if (type === 2) dialog = document.querySelector('#dialog-weekly-data');
-    dialog.show();
+    if (type === 0) dialog = '#dialog-memo-data';
+    if (type === 1) dialog = '#dialog-scheduled-data';
+    if (type === 2) dialog = '#dialog-weekly-data';
+    $(dialog).modal('show');
 
     // Get the select data label and insert it into the text area
     let name = row.find('td:nth-child(2)').text().trim();

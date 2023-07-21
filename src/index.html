@@ -12,9 +12,8 @@
         <!-- bootstrap -->
         <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
         <script src="js/bootstrap.bundle.js"></script>
-        <!-- showlace-->
-        <link rel="stylesheet" href="../node_modules/@shoelace-style/shoelace/dist/themes/light.css" />
-        <script type="module" src="../node_modules/@shoelace-style/shoelace/dist/shoelace.js"></script>
+
+
         <!-- fontawesome -->
         <link rel="stylesheet" href="css/all.css" type="text/css" />
 
@@ -53,19 +52,19 @@
                 </div>
                 <div class="col text-center">
                     <div class="p-2">
-                        <sl-button type="primary" id="btnWeekly" style="width:200px;">
+                        <button type="button" class="btn btn-outline-primary" id="btnWeekly" style="width:250px;">
                             <i class="fa-regular fa-bell fa-fw pr-4"></i>Add Weekly Alarm
-                        </sl-button>
+                        </button>
                     </div>
                     <div class="p-2">
-                        <sl-button type="primary" id="btnScheduled" style="width:200px;">
+                        <button type="button" class="btn btn-outline-primary" id="btnScheduled" style="width:250px;">
                             <i class="fa-solid fa-calendar-days fa-fw pr-4"></i>Add Scheduled Alarm
-                        </sl-button>
+                        </button>
                     </div>
                     <div class="p-2">
-                        <sl-button type="primary" id="btnMemo" style="width:200px;">
+                        <button type="button" class="btn btn-outline-primary" id="btnMemo" style="width:250px;">
                             <i class="fa-solid fa-tag fa-fw pr-4"></i>Add Memo Label
-                        </sl-button>
+                        </button>
                     </div>
                     <div class="p-2">
                         Labels Remainings: <span id="labelRemaining">0</span>
@@ -82,133 +81,244 @@
         </div>
 
         <!-- Add / Edit a memo label -->
-        <sl-dialog label="Memo Label" class="dialog-label dialog-overview" id="dialog-memo" data-action="add">
-            <div class="row">
-                <div class="col ml-4">
-                    <textarea required min="1" max="24" maxlength="24" class="form-control form-input" id="memo-text"
-                        rows="2" cols="12"></textarea>
+        <div class="modal" tabindex="-1" role="dialog" id="dialog-memo" data-action="add">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Memo Label</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col ml-4">
+                                <textarea required min="1" max="24" maxlength="24" class="form-control form-input"
+                                    id="memo-text" rows="2" cols="12"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-primary action-btn" id="btnAddMemoLabel">
+                            <i class="fa-solid fa-plus fa-fw"></i> Add</button>
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
-            <sl-button slot="footer" variant="default" class="pr-2">Close</sl-button>
-            <sl-button slot="footer" variant="primary" id="btnAddMemoLabel"><i class="fa-solid fa-plus"></i> Add
-            </sl-button>
-        </sl-dialog>
+        </div>
 
         <!-- Add / Edit a weekly label -->
-        <sl-dialog label="Weekly Label" class="dialog-label dialog-overview" id="dialog-weekly" data-action="add">
-            <div class="row">
-                <div class="col pl-4">
-                    <textarea required min="1" max="24" maxlength="24" class="form-control form-input" id="weekly-text"
-                        rows="2" cols="12"></textarea>
+        <div class="modal" tabindex="-1" role="dialog" id="dialog-weekly" data-action="add">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Weekly Label</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col pl-4">
+                                <textarea required min="1" max="24" maxlength="24" class="form-control form-input"
+                                    id="weekly-text" rows="2" cols="12"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-primary action-btn" id="btnAddWeeklyLabel">
+                            <i class="fa-solid fa-plus fa-fw"></i> Add</button>
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
-
-            <sl-button slot="footer" variant="default" class="pr-2">Close</sl-button>
-            <sl-button slot="footer" variant="primary" id="btnAddWeeklyLabel">
-                <i class="fa-solid fa-plus"></i> Add
-            </sl-button>
-        </sl-dialog>
+        </div>
 
         <!-- Add / Edit a scheduled label -->
-        <sl-dialog label="Scheduled Label" class="dialog-label dialog-overview" id="dialog-scheduled" data-action="add">
-            <div class="row">
-                <div class="col ml-4">
-                    <textarea required min="1" max="24" maxlength="24" class="form-control form-input"
-                        id="scheduled-text" rows="2" cols="12"></textarea>
+        <div class="modal" tabindex="-1" role="dialog" id="dialog-scheduled" data-action="add">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Schedule Label</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col ml-4">
+                                <textarea required min="1" max="24" maxlength="24" class="form-control form-input"
+                                    id="scheduled-text" rows="2" cols="12"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-primary action-btn" id="btnAddScheduledLabel">
+                                <i class="fa-solid fa-plus fa-fw"></i> Add</button>
+                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <sl-button slot="footer" variant="default" class="pr-2">Close</sl-button>
-            <sl-button slot="footer" variant="primary" id="btnAddScheduledLabel">
-                <i class="fa-solid fa-plus"></i> Add
-            </sl-button>
-        </sl-dialog>
+        </div>
 
         <!-- Set Port Dialog -->
-        <sl-dialog label="Set Port" class="dialog-overview" id="dialog-port">
-            <div class="row">
-                <div class="col ml-4">
-                    <input required max="50" min="4" class="form-control" id="port-text" type="text" />
+        <div class="modal" tabindex="-1" role="dialog" id="dialog-port">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Set Port</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col ml-4">
+                                <input required max="50" min="4" class="form-control" id="port-text" type="text" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-primary" id="btnSaveSerialPort">
+                            <i class="fa-regular fa-floppy-disk fa-fw"></i> Save</button>
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
-            <sl-button slot="footer" variant="default" class="pr-2">Close</sl-button>
-            <sl-button slot="footer" variant="primary" id="btnSaveSerialPort">
-                <i class="fa-regular fa-floppy-disk"></i> Save
-            </sl-button>
-        </sl-dialog>
+        </div>
 
         <!-- Send Data to the watch-->
-        <sl-dialog label="Send Data to Watch" class="dialog-overview" id="dialog-send">
-            <div class="row">
-                <div class="col ml-4">
-                    Press the Terminal & Lock button on the watch and SEND to transmit the data.
+        <div class="modal" tabindex="-1" role="dialog" id="dialog-send">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Send Data to Watch</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col ml-4">
+                                Press the Terminal & Lock button on the watch and SEND to transmit the data.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-primary" id="btnSendData">
+                            <i class="fa-regular fa-paper-plane fa-fw"></i> SEND
+                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
-            <sl-button slot="footer" variant="default" class="pr-2">Close</sl-button>
-            <sl-button slot="footer" variant="primary" id="btnSendData">
-                <i class="fa-regular fa-paper-plane"></i> SEND
-            </sl-button>
-        </sl-dialog>
+        </div>
 
         <!-- Add / Edit memo data -->
-        <sl-dialog label="Memo Data" class="dialog-data dialog-overview" id="dialog-memo-data" data-action="add"
-            data-category="d" data-index="0" data-type="0">
-            <div class="row">
-                <div class="col ml-4">
-                    <textarea required min="1" max="24" maxlength="24" class="form-control form-input"
-                        id="memo-data-text" rows="2" cols="12"></textarea>
+        <div class="modal" tabindex="-1" role="dialog" id="dialog-memo-data" data-action="add" data-category="d"
+            data-index="0" data-type="0">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Memo Data</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col ml-4">
+                                <textarea required min="1" max="24" maxlength="24" class="form-control form-input"
+                                    id="memo-data-text" rows="2" cols="12"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-primary" id="btnAddMemoData">
+                            <i class="fa-solid fa-plus fa-fw"></i> Add</button>
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
-            <sl-button slot="footer" variant="default" class="pr-2">Close</sl-button>
-            <sl-button slot="footer" variant="primary" id="btnAddMemoData"><i class="fa-solid fa-plus"></i> Add
-            </sl-button>
-        </sl-dialog>
+        </div>
 
         <!-- Add / Edit weekly data -->
-        <sl-dialog label="Weeky Alarm Data" class="dialog-data dialog-overview" id="dialog-weekly-data"
-            data-action="add" data-category="d" data-index="0" data-type="2" data-label-id="0">
-            <div class="row">
-                <div class="col ml-4">
-                    <textarea required min="1" max="12" maxlength="24" class="form-control form-input"
-                        id="weekly-data-text" rows="1" cols="12"></textarea>
-                </div>
-                <div class="col">
-                    DAY will select every day of the week
+        <div class="modal" tabindex="-1" role="dialog" id="dialog-weekly-data" data-action="add" data-category="d"
+            data-index="0" data-type="2" data-label-id="0">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Weeky Alarm Data</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="row">
+                            <div class="col ml-4">
+                                <textarea required min="1" max="12" maxlength="24" class="form-control form-input"
+                                    id="weekly-data-text" rows="1" cols="12"></textarea>
+                            </div>
+                            <div class="col">
+                                DAY will select every day of the week
+                            </div>
+                        </div>
+                        <div class="row pt-4">
+                            <div class="col-12 pl-4">
+                                <div id="weekdays"> </div>
+                            </div>
+                            <div class="col-12 pl-4">
+                                <input type="time" id="weekly-time" class="form-control" placeholder="12:00 PM" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-primary" id="btnAddWeeklyData">
+                                <i class="fa-solid fa-plus fa-fw"></i> Add</button>
+                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="row pt-4">
-                <div class="col-12 pl-4">
-                    <div id="weekdays"> </div>
-                </div>
-                <div class="col-12 pl-4">
-                    <input type="time" id="weekly-time" class="form-control" placeholder="12:00 PM" />
-                </div>
-            </div>
-            <sl-button slot="footer" variant="default" class="pr-2">Close</sl-button>
-            <sl-button slot="footer" variant="primary" id="btnAddWeeklyData"><i class="fa-solid fa-plus"></i> Add
-            </sl-button>
-        </sl-dialog>
+        </div>
+
 
         <!-- Add / Edit scheduled data -->
-        <sl-dialog label="Scheduled Alarm Data" class="dialog-data dialog-overview" id="dialog-scheduled-data"
-            data-action="add" data-category="d" data-index="0" data-type="2" data-label-id="0">
-            <div class="row">
-                <div class="col ml-4">
-                    <textarea required min="1" max="12" maxlength="12" class="form-control form-input"
-                        id="scheduled-data-text" rows="1" cols="12"></textarea>
+
+        <div class="modal" tabindex="-1" role="dialog" id="dialog-scheduled-data" data-action="add" data-category="d"
+            data-index="0" data-type="2" data-label-id="0">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Weeky Alarm Datal</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col ml-4">
+                                <textarea required min="1" max="12" maxlength="12" class="form-control form-input"
+                                    id="scheduled-data-text" rows="1" cols="12"></textarea>
+                            </div>
+                        </div>
+                        <div class="row pt-4">
+                            <div class="col-12 pl-4 pb-2">
+                                <input type="date" id="scheduled-date" class="form-control" placeholder="MM-DD" />
+                            </div>
+                            <div class="col-12 pl-4">
+                                <input type="time" id="scheduled-time" class="form-control" placeholder="12:00 PM" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-primary" id="btnAddScheduledData">
+                                <i class="fa-solid fa-plus fa-fw"></i> Add</button>
+                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="row pt-4">
-                <div class="col-12 pl-4 pb-2">
-                    <input type="date" id="scheduled-date" class="form-control" placeholder="MM-DD" />
-                </div>
-                <div class="col-12 pl-4">
-                    <input type="time" id="scheduled-time" class="form-control" placeholder="12:00 PM" />
-                </div>
-            </div>
-            <sl-button slot="footer" variant="default" class="pr-2">Close</sl-button>
-            <sl-button slot="footer" variant="primary" id="btnAddScheduledData"><i class="fa-solid fa-plus"></i> Add
-            </sl-button>
-        </sl-dialog>
+        </div>
+
 
     </body>
 
